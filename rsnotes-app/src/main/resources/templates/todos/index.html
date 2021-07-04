@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
+  <title>Home</title>
+</head>
+<body>
+<div class="container">
+  <h1 class="page-header">TODO一覧</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">text</th>
+        <th scope="col">created_at</th>
+        <th scope="col">updated_at</th>
+      </tr>
+    </thead>
+    <tbody th:remove="all-but-first" th:each="todo : ${todos}">
+      <tr>
+        <td th:text="${todo.id}">1</td>
+        <td th:text="${todo.text}">テキスト</td>
+        <td th:text="${#temporals.format(todo.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
+        <td th:text="${#temporals.format(todo.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</body>
+</html>

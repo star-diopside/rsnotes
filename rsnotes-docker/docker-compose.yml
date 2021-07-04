@@ -1,0 +1,12 @@
+version: "3"
+services:
+  postgres:
+    build: .
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "rsnotes"
+      POSTGRES_PASSWORD: "rsnotes"
+      POSTGRES_DB: "rsnotesdb"
+    volumes:
+      - ./postgres/initdb:/docker-entrypoint-initdb.d

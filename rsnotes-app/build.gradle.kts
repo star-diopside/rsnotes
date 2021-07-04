@@ -1,0 +1,15 @@
+apply(plugin = "org.springframework.boot")
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    runtimeOnly("io.r2dbc:r2dbc-postgresql")
+    runtimeOnly("org.thymeleaf.extras:thymeleaf-extras-java8time")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
