@@ -7,16 +7,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" th:remove="all"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" th:remove="all"/>
   <link rel="stylesheet" href="../../static/css/layout.css" th:remove="all"/>
-  <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Home</title>
+  <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">TODO登録</title>
 </head>
 <body>
 <div class="container">
   <div layout:fragment="content">
-    <h1 class="pb-2 mt-4 mb-2 border-bottom">Home</h1>
-    <div class="list-group">
-      <a href="../todos/index.html" th:href="@{/todos}" class="list-group-item list-group-item-action">TODO一覧</a>
-      <a href="../todos/create.html" th:href="@{/todos/create}" class="list-group-item list-group-item-action">TODO登録</a>
-    </div>
+    <h1 class="pb-2 mt-4 mb-2 border-bottom">TODO登録</h1>
+    <form th:action="@{/todos}" th:object="${todo}" method="post" role="form">
+      <div class="row mb-3">
+        <label for="text" class="form-label col-sm-1">テキスト</label>
+        <div class="col-sm-11">
+          <textarea th:field="*{text}" class="form-control" id="text" rows="5"></textarea>
+        </div>
+      </div>
+      <div class="col-auto">
+        <input type="submit" value="登録" class="btn btn-primary"/>
+      </div>
+    </form>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
