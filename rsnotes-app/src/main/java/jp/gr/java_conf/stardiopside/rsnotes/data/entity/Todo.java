@@ -1,6 +1,7 @@
 package jp.gr.java_conf.stardiopside.rsnotes.data.entity;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +17,7 @@ public class Todo {
     @Id
     private Integer id;
 
+    @Length(max = 2048)
     private String text;
 
     @Column("created_at")
