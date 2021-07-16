@@ -26,18 +26,20 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> index(ServerRequest request) {
-        return ServerResponse.ok()
-                .contentType(MediaType.TEXT_HTML)
+        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                 .render("todos/index", Map.of("todos", todoService.list()));
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
-        throw new UnsupportedOperationException();
+        int id = Integer.parseInt(request.pathVariable("id"));
+        return todoService.find(id)
+                .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
+                        .render("todos/show", Map.of("todo", todo)))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> create(ServerRequest request) {
-        return ServerResponse.ok()
-                .contentType(MediaType.TEXT_HTML)
+        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                 .render("todos/create", new Todo());
     }
 
@@ -51,8 +53,7 @@ public class TodosHandler {
                     var bindingResult = binder.getBindingResult();
 
                     if (bindingResult.hasErrors()) {
-                        return ServerResponse.ok()
-                                .contentType(MediaType.TEXT_HTML)
+                        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                                 .render("todos/create",
                                         Map.of("todo", todo,
                                                 BindingResult.MODEL_KEY_PREFIX + "todo", bindingResult));

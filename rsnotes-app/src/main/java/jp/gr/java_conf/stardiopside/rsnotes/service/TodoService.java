@@ -8,6 +8,8 @@ public interface TodoService {
 
     Flux<Todo> list();
 
+    Mono<Todo> find(int id);
+
     Mono<Todo> save(Todo todo);
 
 }
