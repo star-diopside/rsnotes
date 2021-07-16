@@ -16,18 +16,20 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">id</th>
-          <th scope="col">text</th>
-          <th scope="col">created_at</th>
-          <th scope="col">updated_at</th>
+          <th class="align-baseline" scope="col">ID</th>
+          <th class="align-baseline" scope="col">テキスト</th>
+          <th class="align-baseline" scope="col">作成日時</th>
+          <th class="align-baseline" scope="col">更新日時</th>
+          <th class="align-baseline" scope="col"></th>
         </tr>
       </thead>
       <tbody th:remove="all-but-first" th:each="todo : ${todos}">
         <tr>
-          <td th:text="${todo.id}">1</td>
-          <td th:text="${todo.text}">テキスト</td>
-          <td th:text="${#temporals.format(todo.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
-          <td th:text="${#temporals.format(todo.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
+          <td class="align-baseline" th:text="${todo.id}">1</td>
+          <td class="align-baseline" th:text="${#strings.abbreviate(todo.text, 64)}">テキスト</td>
+          <td class="align-baseline" th:text="${#temporals.format(todo.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
+          <td class="align-baseline" th:text="${#temporals.format(todo.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
+          <td class="align-baseline"><a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-default" href="show.html">詳細</a></td>
         </tr>
       </tbody>
     </table>

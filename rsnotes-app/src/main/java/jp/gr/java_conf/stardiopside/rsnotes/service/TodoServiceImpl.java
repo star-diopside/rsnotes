@@ -2,6 +2,7 @@ package jp.gr.java_conf.stardiopside.rsnotes.service;
 
 import jp.gr.java_conf.stardiopside.rsnotes.data.entity.Todo;
 import jp.gr.java_conf.stardiopside.rsnotes.data.repository.TodoRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,7 +18,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public Flux<Todo> list() {
-        return todoRepository.findAll();
+        return todoRepository.findAll(Sort.by("id").ascending());
     }
 
     @Override

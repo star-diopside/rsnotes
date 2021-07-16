@@ -3,3 +3,7 @@ spring:
     url: r2dbc:postgresql://localhost:5432/rsnotesdb
     username: rsnotes
     password: rsnotes
+logging:
+  level:
+    "io.r2dbc.postgresql.QUERY": debug
+    "io.r2dbc.postgresql.PARAM": debug
