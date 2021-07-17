@@ -4,11 +4,13 @@ import jp.gr.java_conf.stardiopside.rsnotes.data.entity.Todo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.OptionalInt;
+
 public interface TodoService {
 
     Flux<Todo> list();
 
-    Mono<Todo> find(int id);
+    Mono<Node<Todo, OptionalInt>> find(int id);
 
     Mono<Todo> save(Todo todo);
 

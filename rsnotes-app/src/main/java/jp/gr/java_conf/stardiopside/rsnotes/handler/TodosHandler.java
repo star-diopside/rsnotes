@@ -9,9 +9,9 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.support.WebExchangeDataBinder;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.Map;
 
 @Component
@@ -34,7 +34,10 @@ public class TodosHandler {
         int id = Integer.parseInt(request.pathVariable("id"));
         return todoService.find(id)
                 .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                        .render("todos/show", Map.of("todo", todo)))
+                        .render("todos/show",
+                                Map.of("todo", todo.getItem(),
+                                        "prev", todo.getPrev(),
+                                        "next", todo.getNext())))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -60,7 +63,8 @@ public class TodosHandler {
                     }
 
                     return todoService.save(todo)
-                            .flatMap(t -> ServerResponse.seeOther(URI.create("/todos")).build());
+                            .flatMap(t -> ServerResponse.seeOther(UriComponentsBuilder
+                                    .fromUriString("/todos/{id}").build(t.getId())).build());
                 }));
     }
 

@@ -5,5 +5,4 @@ spring:
     password: rsnotes
 logging:
   level:
-    "io.r2dbc.postgresql.QUERY": debug
-    "io.r2dbc.postgresql.PARAM": debug
+    "org.springframework.r2dbc": debug

@@ -29,7 +29,7 @@
           <td class="align-baseline" th:text="${#strings.abbreviate(todo.text, 64)}">テキスト</td>
           <td class="align-baseline" th:text="${#temporals.format(todo.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
           <td class="align-baseline" th:text="${#temporals.format(todo.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
-          <td class="align-baseline"><a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-default" href="show.html">詳細</a></td>
+          <td class="align-baseline"><a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-default" href="show.html" role="button">詳細</a></td>
         </tr>
       </tbody>
     </table>
