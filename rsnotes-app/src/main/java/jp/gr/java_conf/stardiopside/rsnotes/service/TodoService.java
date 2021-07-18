@@ -10,7 +10,7 @@ public interface TodoService {
 
     Flux<Todo> list();
 
-    Mono<Node<Todo, OptionalInt>> find(int id);
+    Mono<Node<Todo, OptionalInt>> find(Integer id);
 
     Mono<Todo> save(Todo todo);
 

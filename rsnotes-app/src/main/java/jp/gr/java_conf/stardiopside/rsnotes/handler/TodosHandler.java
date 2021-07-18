@@ -31,8 +31,9 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
-        int id = Integer.parseInt(request.pathVariable("id"));
-        return todoService.find(id)
+        return Mono.fromSupplier(() -> Integer.valueOf(request.pathVariable("id")))
+                .onErrorResume(NumberFormatException.class, e -> Mono.empty())
+                .flatMap(id -> todoService.find(id))
                 .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                         .render("todos/show",
                                 Map.of("todo", todo.getItem(),

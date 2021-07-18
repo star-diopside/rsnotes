@@ -25,7 +25,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Mono<Node<Todo, OptionalInt>> find(int id) {
+    public Mono<Node<Todo, OptionalInt>> find(Integer id) {
         var todo = todoRepository.findById(id);
         var prev = todoRepository
                 .findByIdLessThan(id, PageRequest.of(0, 1, Sort.by("id").descending()), IdOnly.class)
