@@ -14,12 +14,12 @@
   <div layout:fragment="content">
     <h1 class="pb-2 mt-4 mb-2 border-bottom">TODO登録</h1>
     <form th:action="@{/todos}" th:object="${todo}" method="post" role="form">
-      <div th:errors="*{global}" class="alert alert-danger">エラーメッセージ</div>
+      <div th:errors="*{global}" class="alert alert-danger" role="alert">エラーメッセージ</div>
       <div class="row mb-3">
         <label for="text" class="col-form-label col-sm-2">テキスト</label>
         <div class="col-sm-10">
-          <textarea th:field="*{text}" class="form-control" id="text" rows="5"></textarea>
-          <span th:errors="*{text}" class="form-text"></span>
+          <textarea th:field="*{text}" th:class="${#fields.hasErrors('text')}? 'form-control is-invalid' : 'form-control'" class="form-control is-invalid" id="text" rows="5"></textarea>
+          <div th:errors="*{text}" class="invalid-feedback">エラーメッセージ</div>
         </div>
       </div>
       <div class="row mb-3">
