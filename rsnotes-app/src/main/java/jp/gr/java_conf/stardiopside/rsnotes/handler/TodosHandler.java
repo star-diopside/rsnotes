@@ -2,6 +2,8 @@ package jp.gr.java_conf.stardiopside.rsnotes.handler;
 
 import jp.gr.java_conf.stardiopside.rsnotes.data.entity.Todo;
 import jp.gr.java_conf.stardiopside.rsnotes.service.TodoService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -19,10 +21,12 @@ public class TodosHandler {
 
     private final TodoService todoService;
     private final Validator validator;
+    private final MessageSource messageSource;
 
-    public TodosHandler(TodoService todoService, Validator validator) {
+    public TodosHandler(TodoService todoService, Validator validator, MessageSource messageSource) {
         this.todoService = todoService;
         this.validator = validator;
+        this.messageSource = messageSource;
     }
 
     public Mono<ServerResponse> index(ServerRequest request) {
@@ -31,6 +35,9 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
+        var messageSuccess = request.session()
+                .flatMap(session -> Mono.justOrEmpty(session.getAttributes().remove("messages.success")))
+                .map(Object::toString);
         return Mono.fromSupplier(() -> Integer.valueOf(request.pathVariable("id")))
                 .onErrorResume(NumberFormatException.class, e -> Mono.empty())
                 .flatMap(id -> todoService.find(id))
@@ -38,7 +45,8 @@ public class TodosHandler {
                         .render("todos/show",
                                 Map.of("todo", todo.getItem(),
                                         "prev", todo.getPrev(),
-                                        "next", todo.getNext())))
+                                        "next", todo.getNext(),
+                                        "success", messageSuccess)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -63,7 +71,13 @@ public class TodosHandler {
                                                 BindingResult.MODEL_KEY_PREFIX + "todo", bindingResult));
                     }
 
+                    var messageSourceAccessor = new MessageSourceAccessor(messageSource,
+                            request.exchange().getLocaleContext().getLocale());
+
                     return todoService.save(todo)
+                            .doOnSuccess(t -> request.session().subscribe(session ->
+                                    session.getAttributes().put("messages.success",
+                                            messageSourceAccessor.getMessage("messages.success-create"))))
                             .flatMap(t -> ServerResponse.seeOther(UriComponentsBuilder
                                     .fromUriString("/todos/{id}").build(t.getId())).build());
                 }));
