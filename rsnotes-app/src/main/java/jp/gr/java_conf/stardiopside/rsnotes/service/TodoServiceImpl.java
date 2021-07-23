@@ -57,4 +57,9 @@ public class TodoServiceImpl implements TodoService {
     public Mono<Todo> save(Todo todo) {
         return todoRepository.save(todo);
     }
+
+    @Override
+    public Mono<Void> delete(Integer id) {
+        return todoRepository.deleteById(id);
+    }
 }

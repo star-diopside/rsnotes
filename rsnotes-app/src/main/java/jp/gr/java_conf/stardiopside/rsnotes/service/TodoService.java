@@ -18,4 +18,6 @@ public interface TodoService {
 
     Mono<Todo> save(Todo todo);
 
+    Mono<Void> delete(Integer id);
+
 }

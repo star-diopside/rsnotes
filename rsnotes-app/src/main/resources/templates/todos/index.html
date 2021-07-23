@@ -13,25 +13,29 @@
 <div class="container">
   <div layout:fragment="content">
     <h1 class="pb-2 mt-4 mb-2 border-bottom">TODO一覧</h1>
+    <div th:if="${success}" th:text="${success}" class="alert alert-success" role="alert">メッセージ</div>
     <table class="table">
       <thead>
         <tr>
-          <th class="align-baseline" scope="col">ID</th>
+          <th class="align-baseline" scope="col">#</th>
           <th class="align-baseline" scope="col">テキスト</th>
           <th class="align-baseline" scope="col">作成日時</th>
           <th class="align-baseline" scope="col">更新日時</th>
-          <th class="align-baseline" scope="col"></th>
+          <th class="align-baseline text-center" scope="col">アクション</th>
         </tr>
       </thead>
       <tbody th:remove="all-but-first" th:each="todo : ${todos}">
         <tr>
           <td class="align-baseline" th:text="${todo.id}">1</td>
-          <td class="align-baseline" th:text="${#strings.abbreviate(todo.text, 64)}">テキスト</td>
+          <td class="align-baseline" th:text="${#strings.abbreviate(todo.text, 32)}">テキスト</td>
           <td class="align-baseline" th:text="${#temporals.format(todo.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
           <td class="align-baseline" th:text="${#temporals.format(todo.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
           <td class="align-baseline text-center">
-            <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-default" href="show.html" role="button">詳細</a>
-            <a th:href="@{/todos/{id}/edit(id=${todo.id})}" class="btn btn-default" href="edit.html" role="button">編集</a>
+            <form th:action="@{/todos/{id}/delete(id=${todo.id})}" method="post" role="form">
+              <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-secondary" href="show.html" role="button">詳細</a>
+              <a th:href="@{/todos/{id}/edit(id=${todo.id})}" class="btn btn-secondary" href="edit.html" role="button">編集</a>
+              <input type="submit" value="削除" class="btn btn-danger"/>
+            </form>
           </td>
         </tr>
       </tbody>

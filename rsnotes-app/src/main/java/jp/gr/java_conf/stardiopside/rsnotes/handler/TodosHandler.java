@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.OptionalInt;
 
@@ -34,8 +35,13 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> index(ServerRequest request) {
+        var messageSuccess = request.session()
+                .flatMap(session -> Mono.justOrEmpty(session.getAttributes().remove("messages.success")))
+                .map(Object::toString);
         return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                .render("todos/index", Map.of("todos", todoService.list()));
+                .render("todos/index",
+                        Map.of("todos", todoService.list(),
+                                "success", messageSuccess));
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
@@ -85,7 +91,15 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {
-        throw new UnsupportedOperationException();
+        var messages = new MessageSourceAccessor(messageSource,
+                request.exchange().getLocaleContext().getLocale());
+        return parseId(request)
+                .flatMap(i -> todoService.delete(i)
+                        .doOnSuccess(v -> request.session().subscribe(session ->
+                                session.getAttributes().put("messages.success",
+                                        messages.getMessage("messages.success-delete"))))
+                        .then(Mono.defer(() -> ServerResponse.seeOther(URI.create("/todos")).build())))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     private Mono<Integer> parseId(ServerRequest request) {

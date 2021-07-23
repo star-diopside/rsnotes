@@ -34,17 +34,17 @@
         <div class="col-sm-12">
           <div class="float-start">
             <th:block th:switch="${prev.isPresent()}">
-              <a th:case="true" th:href="@{/todos/{id}/edit(id=${prev.getAsInt()})}" class="btn btn-default" href="show.html" role="button">前へ</a>
-              <a th:case="false" class="btn btn-default disabled" role="button" aria-disabled="true">前へ</a>
+              <a th:case="true" th:href="@{/todos/{id}/edit(id=${prev.getAsInt()})}" class="btn btn-secondary" href="edit.html" role="button">前へ</a>
+              <a th:case="false" class="btn btn-secondary disabled" role="button" aria-disabled="true">前へ</a>
             </th:block>
             <th:block th:switch="${next.isPresent()}">
-              <a th:case="true" th:href="@{/todos/{id}/edit(id=${next.getAsInt()})}" class="btn btn-default" href="show.html" role="button">次へ</a>
-              <a th:case="false" class="btn btn-default disabled" role="button" aria-disabled="true">次へ</a>
+              <a th:case="true" th:href="@{/todos/{id}/edit(id=${next.getAsInt()})}" class="btn btn-secondary" href="edit.html" role="button">次へ</a>
+              <a th:case="false" class="btn btn-secondary disabled" role="button" aria-disabled="true">次へ</a>
             </th:block>
           </div>
           <div class="float-end">
-            <a th:href="@{/todos}" class="btn btn-default" href="index.html" role="button">一覧</a>
-            <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-default" href="index.html" role="button">詳細</a>
+            <a th:href="@{/todos}" class="btn btn-secondary" href="index.html" role="button">一覧</a>
+            <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-secondary" href="show.html" role="button">詳細</a>
             <input type="submit" value="更新" class="btn btn-primary"/>
           </div>
         </div>
