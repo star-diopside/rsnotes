@@ -25,8 +25,12 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Mono<Node<Todo, OptionalInt>> find(Integer id) {
-        var todo = todoRepository.findById(id);
+    public Mono<Todo> find(Integer id) {
+        return todoRepository.findById(id);
+    }
+
+    @Override
+    public Mono<Around<OptionalInt>> findAround(Integer id) {
         var prev = todoRepository
                 .findByIdLessThan(id, PageRequest.of(0, 1, Sort.by("id").descending()), IdOnly.class)
                 .next()
@@ -37,8 +41,16 @@ public class TodoServiceImpl implements TodoService {
                 .next()
                 .map(t -> OptionalInt.of(t.getId()))
                 .defaultIfEmpty(OptionalInt.empty());
-        return Mono.zip(todo, prev, next)
-                .map(t -> new Node<>(t.getT1(), t.getT2(), t.getT3()));
+        return Mono.zip(prev, next)
+                .map(t -> new Around<>(t.getT1(), t.getT2()));
+    }
+
+    @Override
+    public Mono<Node<Todo, OptionalInt>> findWithAround(Integer id) {
+        var todo = find(id);
+        var around = findAround(id);
+        return Mono.zip(todo, around)
+                .map(t -> new Node<>(t.getT1(), t.getT2().getPrev(), t.getT2().getNext()));
     }
 
     @Override

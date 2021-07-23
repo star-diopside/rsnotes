@@ -10,7 +10,11 @@ public interface TodoService {
 
     Flux<Todo> list();
 
-    Mono<Node<Todo, OptionalInt>> find(Integer id);
+    Mono<Todo> find(Integer id);
+
+    Mono<Around<OptionalInt>> findAround(Integer id);
+
+    Mono<Node<Todo, OptionalInt>> findWithAround(Integer id);
 
     Mono<Todo> save(Todo todo);
 

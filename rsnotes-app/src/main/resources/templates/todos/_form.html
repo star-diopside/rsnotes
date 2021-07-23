@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../../static/css/layout.css"/>
+  <title>TODO入力テンプレート</title>
+</head>
+<body>
+<div class="container">
+  <h1 class="pb-2 mt-4 mb-2 border-bottom">TODO入力テンプレート</h1>
+  <form method="post" role="form">
+    <div class="alert alert-danger" role="alert">エラーメッセージ</div>
+    <div th:fragment="content">
+      <div class="row mb-3">
+        <label for="text" class="col-form-label col-sm-2">テキスト</label>
+        <div class="col-sm-10">
+          <textarea th:field="*{text}" th:class="${#fields.hasErrors('text')}? 'form-control is-invalid' : 'form-control'" class="form-control is-invalid" id="text" rows="5"></textarea>
+          <div th:errors="*{text}" class="invalid-feedback">エラーメッセージ</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-sm-12">
+        <div class="float-end">
+          <input type="submit" value="登録" class="btn btn-primary"/>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
