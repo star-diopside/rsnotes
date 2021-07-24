@@ -1,7 +1,6 @@
 package jp.gr.java_conf.stardiopside.rsnotes.data.entity;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,14 +14,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @With
-@Table("todos")
-public class Todo {
+@ToString(exclude = "password")
+@Table("users")
+public class User {
 
     @Id
     private Integer id;
 
-    @Length(max = 2048)
-    private String text;
+    private String username;
+
+    private String password;
+
+    private boolean enabled;
 
     @Column("created_at")
     @CreatedDate

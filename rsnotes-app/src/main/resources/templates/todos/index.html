@@ -31,7 +31,7 @@
           <td class="align-baseline" th:text="${#temporals.format(todo.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
           <td class="align-baseline" th:text="${#temporals.format(todo.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
           <td class="align-baseline text-center">
-            <form th:action="@{/todos/{id}/delete(id=${todo.id})}" method="post" role="form">
+            <form th:action="@{/todos/{id}/delete(id=${todo.id})}" action="index.html" method="post" role="form">
               <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-secondary" href="show.html" role="button">詳細</a>
               <a th:href="@{/todos/{id}/edit(id=${todo.id})}" class="btn btn-secondary" href="edit.html" role="button">編集</a>
               <input type="submit" value="削除" class="btn btn-danger"/>
