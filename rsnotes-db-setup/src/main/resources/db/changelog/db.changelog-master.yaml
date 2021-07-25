@@ -31,10 +31,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: created_by
+                  type: varchar(32)
+              - column:
                   name: updated_at
                   type: timestamp
                   constraints:
                     nullable: false
+              - column:
+                  name: updated_by
+                  type: varchar(32)
         - createTable:
             tableName: authorities
             columns:
@@ -60,10 +66,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: created_by
+                  type: varchar(32)
+              - column:
                   name: updated_at
                   type: timestamp
                   constraints:
                     nullable: false
+              - column:
+                  name: updated_by
+                  type: varchar(32)
         - addForeignKeyConstraint:
             constraintName: fk_authorities_users
             baseTableName: authorities
@@ -90,7 +102,13 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: created_by
+                  type: varchar(32)
+              - column:
                   name: updated_at
                   type: timestamp
                   constraints:
                     nullable: false
+              - column:
+                  name: updated_by
+                  type: varchar(32)

@@ -2,9 +2,7 @@ package jp.gr.java_conf.stardiopside.rsnotes.data.entity;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.*;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -28,8 +26,16 @@ public class Todo {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Column("created_by")
+    @CreatedBy
+    private String createdBy;
+
     @Column("updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Column("updated_by")
+    @LastModifiedBy
+    private String updatedBy;
 
 }
