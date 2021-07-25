@@ -28,20 +28,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Mono<Void> create(String username, String rawPassword, String... roles) {
-        return userRepository
+    public Mono<User> create(String username, String rawPassword, String... roles) {
+        var user = userRepository
                 .save(User.builder()
                         .username(username)
                         .password(passwordEncoder.encode(rawPassword))
                         .enabled(true)
                         .build())
+                .cache();
+        var authorities = user
                 .map(u -> Arrays.stream(roles)
                         .map(r -> Authority.builder()
                                 .userId(u.getId())
                                 .authority("ROLE_" + r)
                                 .build())
                         .collect(Collectors.toList()))
-                .flatMapMany(authorityRepository::saveAll)
-                .then();
+                .flatMapMany(authorityRepository::saveAll);
+        return authorities.then(user);
     }
 }

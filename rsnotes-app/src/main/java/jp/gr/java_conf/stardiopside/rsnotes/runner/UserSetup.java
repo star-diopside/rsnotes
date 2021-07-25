@@ -21,7 +21,7 @@ public class UserSetup implements CommandLineRunner {
     public void run(String... args) throws Exception {
         userRepository.count()
                 .flatMap(count -> count == 0
-                        ? userService.create("admin", "admin", "ADMIN")
+                        ? userService.create("admin", "admin", "ADMIN", "USER")
                         : Mono.empty())
                 .subscribe();
     }
