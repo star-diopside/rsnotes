@@ -3,6 +3,10 @@ spring:
     url: r2dbc:postgresql://localhost:5432/rsnotesdb
     username: rsnotes
     password: rsnotes
+  webflux:
+    hiddenmethod:
+      filter:
+        enabled: true
 logging:
   level:
     "org.springframework.r2dbc": debug

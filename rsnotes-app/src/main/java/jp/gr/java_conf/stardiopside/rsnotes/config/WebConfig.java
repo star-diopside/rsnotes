@@ -35,9 +35,9 @@ public class WebConfig {
                         .GET("/{id}", todosHandler::show)
                         .GET("/{id}/edit", todosHandler::edit)
                         .GET(todosHandler::index)
-                        .POST("/{id}", todosHandler::update)
-                        .POST("/{id}/delete", todosHandler::delete)
-                        .POST(todosHandler::save))
+                        .POST(todosHandler::save)
+                        .PUT("/{id}", todosHandler::update)
+                        .DELETE("/{id}", todosHandler::delete))
                 .build();
     }
 }
