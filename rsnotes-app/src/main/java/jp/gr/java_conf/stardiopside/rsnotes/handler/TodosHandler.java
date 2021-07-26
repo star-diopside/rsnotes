@@ -136,7 +136,7 @@ public class TodosHandler {
                 request.exchange().getLocaleContext().getLocale());
 
         return todoService.save(todo)
-                .doOnSuccess(t -> request.session().subscribe(session ->
+                .doOnNext(t -> request.session().subscribe(session ->
                         session.getAttributes().put("messages.success",
                                 messages.getMessage(successMessage))))
                 .flatMap(t -> ServerResponse.seeOther(UriComponentsBuilder
