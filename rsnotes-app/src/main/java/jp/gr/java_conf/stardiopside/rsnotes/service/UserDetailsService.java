@@ -23,8 +23,7 @@ public class UserDetailsService implements ReactiveUserDetailsService {
     @Override
     public Mono<UserDetails> findByUsername(String username) {
         var user = userRepository
-                .findByUsernameAndEnabledIsTrue(username)
-                .next()
+                .findByUsername(username)
                 .cache();
         var authorities = user
                 .flatMapMany(u -> authorityRepository.findByUserId(u.getId()))
