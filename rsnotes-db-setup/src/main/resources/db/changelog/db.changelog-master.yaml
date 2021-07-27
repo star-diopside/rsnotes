@@ -56,6 +56,9 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_authorities_users
+                    referencedTableName: users
+                    referencedColumnNames: id
               - column:
                   name: authority
                   type: varchar(50)
@@ -77,12 +80,9 @@ databaseChangeLog:
               - column:
                   name: updated_by
                   type: varchar(32)
-        - addForeignKeyConstraint:
-            constraintName: fk_authorities_users
-            baseTableName: authorities
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
+        - addUniqueConstraint:
+            tableName: authorities
+            columnNames: user_id, authority
         - createTable:
             tableName: todos
             columns:
