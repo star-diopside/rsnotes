@@ -7,10 +7,10 @@ import jp.gr.java_conf.stardiopside.rsnotes.data.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,14 +36,14 @@ public class UserServiceImpl implements UserService {
                         .enabled(true)
                         .build())
                 .cache();
-        var authorities = user
+        return user
                 .map(u -> Arrays.stream(roles)
                         .map(r -> Authority.builder()
                                 .userId(u.getId())
                                 .authority("ROLE_" + r)
-                                .build())
-                        .collect(Collectors.toList()))
-                .flatMapMany(authorityRepository::saveAll);
-        return authorities.then(user);
+                                .build()))
+                .flatMapMany(Flux::fromStream)
+                .flatMap(authorityRepository::save)
+                .then(user);
     }
 }
