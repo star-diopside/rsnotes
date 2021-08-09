@@ -28,7 +28,7 @@ public class UserDetailsService implements ReactiveUserDetailsService {
         var authorities = user
                 .flatMapMany(u -> authorityRepository.findByUserId(u.getId()))
                 .map(a -> new SimpleGrantedAuthority(a.getAuthority()));
-        return Mono.zip(user, authorities.collectList())
+        return Mono.zip(user, authorities.collectList().mapNotNull(a -> a.isEmpty() ? null : a))
                 .map(t -> new User(
                         t.getT1().getUsername(),
                         t.getT1().getPassword(),
