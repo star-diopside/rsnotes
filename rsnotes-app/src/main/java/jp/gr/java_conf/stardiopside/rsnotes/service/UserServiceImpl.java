@@ -4,6 +4,7 @@ import jp.gr.java_conf.stardiopside.rsnotes.data.entity.Authority;
 import jp.gr.java_conf.stardiopside.rsnotes.data.entity.User;
 import jp.gr.java_conf.stardiopside.rsnotes.data.repository.AuthorityRepository;
 import jp.gr.java_conf.stardiopside.rsnotes.data.repository.UserRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Flux<User> list() {
+        return userRepository.findAll(Sort.by("id").ascending());
+    }
+
+    @Override
     @Transactional
     public Mono<User> create(String username, String rawPassword, String... roles) {
         var user = userRepository
@@ -37,12 +43,11 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .cache();
         return user
-                .map(u -> Arrays.stream(roles)
+                .flatMapMany(u -> Flux.fromStream(Arrays.stream(roles)
                         .map(r -> Authority.builder()
                                 .userId(u.getId())
                                 .authority("ROLE_" + r)
-                                .build()))
-                .flatMapMany(Flux::fromStream)
+                                .build())))
                 .flatMap(authorityRepository::save)
                 .then(user);
     }

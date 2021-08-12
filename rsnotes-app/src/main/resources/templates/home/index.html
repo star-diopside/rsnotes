@@ -14,6 +14,7 @@
   <div layout:fragment="content">
     <h1 class="pb-2 mt-4 mb-2 border-bottom">Home</h1>
     <div class="list-group">
+      <a href="../users/index.html" th:href="@{/users}" class="list-group-item list-group-item-action">ユーザ一覧</a>
       <a href="../todos/index.html" th:href="@{/todos}" class="list-group-item list-group-item-action">TODO一覧</a>
       <a href="../todos/create.html" th:href="@{/todos/create}" class="list-group-item list-group-item-action">TODO登録</a>
     </div>
