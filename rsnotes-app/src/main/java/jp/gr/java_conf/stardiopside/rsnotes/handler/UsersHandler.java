@@ -25,7 +25,12 @@ public class UsersHandler {
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
-        throw new UnsupportedOperationException();
+        return parseId(request)
+                .flatMap(userService::find)
+                .flatMap(user -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
+                        .render("users/show",
+                                Map.of("user", user)))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> create(ServerRequest request) {
@@ -46,5 +51,10 @@ public class UsersHandler {
 
     public Mono<ServerResponse> delete(ServerRequest request) {
         throw new UnsupportedOperationException();
+    }
+
+    private Mono<Integer> parseId(ServerRequest request) {
+        return Mono.fromSupplier(() -> Integer.valueOf(request.pathVariable("id")))
+                .onErrorResume(NumberFormatException.class, e -> Mono.empty());
     }
 }

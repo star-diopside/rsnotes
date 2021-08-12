@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 @Service
 public class UserDetailsService implements ReactiveUserDetailsService {
 
@@ -28,7 +31,7 @@ public class UserDetailsService implements ReactiveUserDetailsService {
         var authorities = user
                 .flatMapMany(u -> authorityRepository.findByUserId(u.getId()))
                 .map(a -> new SimpleGrantedAuthority(a.getAuthority()));
-        return Mono.zip(user, authorities.collectList().mapNotNull(a -> a.isEmpty() ? null : a))
+        return Mono.zip(user, authorities.collectList().filter(Predicate.not(List::isEmpty)))
                 .map(t -> new User(
                         t.getT1().getUsername(),
                         t.getT1().getPassword(),

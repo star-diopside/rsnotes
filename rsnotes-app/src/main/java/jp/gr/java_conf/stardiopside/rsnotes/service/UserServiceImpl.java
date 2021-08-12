@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Mono<User> find(Integer id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     @Transactional
     public Mono<User> create(String username, String rawPassword, String... roles) {
         var user = userRepository
