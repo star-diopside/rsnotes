@@ -15,7 +15,7 @@
     <h1 class="pb-2 mt-4 mb-2 border-bottom">TODO編集</h1>
     <form th:action="@{/todos/{id}(id=${todo.id})}" th:method="put" th:object="${todo}" action="show.html" role="form">
       <div th:errors="*{global}" class="alert alert-danger" role="alert">エラーメッセージ</div>
-      <div th:replace="todos/_form :: content">
+      <div th:replace="~{todos/_form :: content}">
         入力エリア
       </div>
       <div class="row mb-3">

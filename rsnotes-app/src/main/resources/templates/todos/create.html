@@ -15,7 +15,7 @@
     <h1 class="pb-2 mt-4 mb-2 border-bottom">TODO登録</h1>
     <form th:action="@{/todos}" th:method="post" th:object="${todo}" action="show.html" role="form">
       <div th:errors="*{global}" class="alert alert-danger" role="alert">エラーメッセージ</div>
-      <div th:replace="todos/_form :: content">
+      <div th:replace="~{todos/_form :: content}">
         入力エリア
       </div>
       <div class="row mb-3">
