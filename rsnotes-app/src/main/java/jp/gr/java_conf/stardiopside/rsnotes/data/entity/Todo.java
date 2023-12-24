@@ -1,8 +1,18 @@
 package jp.gr.java_conf.stardiopside.rsnotes.data.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
@@ -22,9 +32,11 @@ public class Todo {
     private String text;
 
     @CreatedDate
+    @InsertOnlyProperty
     private LocalDateTime createdAt;
 
     @CreatedBy
+    @InsertOnlyProperty
     private String createdBy;
 
     @LastModifiedDate
@@ -32,5 +44,8 @@ public class Todo {
 
     @LastModifiedBy
     private String updatedBy;
+
+    @Version
+    private Integer version;
 
 }

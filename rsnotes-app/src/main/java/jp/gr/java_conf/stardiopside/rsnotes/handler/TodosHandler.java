@@ -83,8 +83,7 @@ public class TodosHandler {
 
     public Mono<ServerResponse> update(ServerRequest request) {
         return parseId(request)
-                .flatMap(todoService::find)
-                .flatMap(todo -> bindAndValidate(request, todo))
+                .flatMap(id -> bindAndValidate(request, Todo.builder().id(id).build()))
                 .flatMap(tuple -> save(request, tuple.getT1(), tuple.getT2(),
                         "todos/edit", "messages.success-update"))
                 .switchIfEmpty(ServerResponse.notFound().build());
@@ -94,7 +93,8 @@ public class TodosHandler {
         var messages = new MessageSourceAccessor(messageSource,
                 request.exchange().getLocaleContext().getLocale());
         return parseId(request)
-                .flatMap(i -> todoService.delete(i)
+                .flatMap(id -> bind(request, Todo.builder().id(id).build()))
+                .flatMap(todo -> todoService.delete(todo)
                         .doOnSuccess(v -> request.session().subscribe(session ->
                                 session.getAttributes().put("messages.success",
                                         messages.getMessage("messages.success-delete"))))
@@ -105,6 +105,12 @@ public class TodosHandler {
     private Mono<Integer> parseId(ServerRequest request) {
         return Mono.fromSupplier(() -> Integer.valueOf(request.pathVariable("id")))
                 .onErrorResume(NumberFormatException.class, e -> Mono.empty());
+    }
+
+    private Mono<Todo> bind(ServerRequest request, Todo todo) {
+        var binder = new WebExchangeDataBinder(todo);
+        return binder.bind(request.exchange())
+                .then(Mono.just(todo));
     }
 
     private Mono<Tuple2<Todo, BindingResult>> bindAndValidate(ServerRequest request, Todo todo) {

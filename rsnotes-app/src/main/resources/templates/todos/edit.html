@@ -18,6 +18,7 @@
       <div th:replace="~{todos/_form :: content}">
         入力エリア
       </div>
+      <input type="hidden" th:field="*{version}"/>
       <div class="row mb-3">
         <label for="createdAt" class="col-form-label col-sm-2">作成日時</label>
         <div class="col-sm-10">

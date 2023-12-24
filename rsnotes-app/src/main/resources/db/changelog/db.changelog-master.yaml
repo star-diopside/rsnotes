@@ -42,6 +42,11 @@ databaseChangeLog:
               - column:
                   name: updated_by
                   type: varchar(32)
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
         - createTable:
             tableName: authorities
             columns:
@@ -80,6 +85,11 @@ databaseChangeLog:
               - column:
                   name: updated_by
                   type: varchar(32)
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
         - addUniqueConstraint:
             tableName: authorities
             columnNames: user_id, authority
@@ -113,3 +123,8 @@ databaseChangeLog:
               - column:
                   name: updated_by
                   type: varchar(32)
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false

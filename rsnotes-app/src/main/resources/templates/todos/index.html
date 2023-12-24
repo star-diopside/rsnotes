@@ -35,6 +35,7 @@
               <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-secondary" href="show.html" role="button">詳細</a>
               <a th:href="@{/todos/{id}/edit(id=${todo.id})}" class="btn btn-secondary" href="edit.html" role="button">編集</a>
               <input type="submit" value="削除" class="btn btn-danger"/>
+              <input type="hidden" name="version" th:value="${todo.version}"/>
             </form>
           </td>
         </tr>
