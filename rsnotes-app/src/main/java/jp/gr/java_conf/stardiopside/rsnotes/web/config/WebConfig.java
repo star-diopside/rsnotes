@@ -1,8 +1,8 @@
-package jp.gr.java_conf.stardiopside.rsnotes.config;
+package jp.gr.java_conf.stardiopside.rsnotes.web.config;
 
-import jp.gr.java_conf.stardiopside.rsnotes.handler.HomeHandler;
-import jp.gr.java_conf.stardiopside.rsnotes.handler.TodosHandler;
-import jp.gr.java_conf.stardiopside.rsnotes.handler.UsersHandler;
+import jp.gr.java_conf.stardiopside.rsnotes.web.handler.HomeHandler;
+import jp.gr.java_conf.stardiopside.rsnotes.web.handler.TodosHandler;
+import jp.gr.java_conf.stardiopside.rsnotes.web.handler.UsersHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;

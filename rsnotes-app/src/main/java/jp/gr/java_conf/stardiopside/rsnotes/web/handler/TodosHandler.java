@@ -1,4 +1,4 @@
-package jp.gr.java_conf.stardiopside.rsnotes.handler;
+package jp.gr.java_conf.stardiopside.rsnotes.web.handler;
 
 import jp.gr.java_conf.stardiopside.rsnotes.data.entity.Todo;
 import jp.gr.java_conf.stardiopside.rsnotes.service.Around;
@@ -52,9 +52,9 @@ public class TodosHandler {
                 .flatMap(todoService::findWithAround)
                 .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                         .render("todos/show",
-                                Map.of("todo", todo.getItem(),
-                                        "prev", todo.getPrev(),
-                                        "next", todo.getNext(),
+                                Map.of("todo", todo.item(),
+                                        "prev", todo.prev(),
+                                        "next", todo.next(),
                                         "success", messageSuccess)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
@@ -75,9 +75,9 @@ public class TodosHandler {
                 .flatMap(todoService::findWithAround)
                 .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                         .render("todos/edit",
-                                Map.of("todo", todo.getItem(),
-                                        "prev", todo.getPrev(),
-                                        "next", todo.getNext())))
+                                Map.of("todo", todo.item(),
+                                        "prev", todo.prev(),
+                                        "next", todo.next())))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -134,8 +134,8 @@ public class TodosHandler {
                             .render(errorRender,
                                     Map.of("todo", todo,
                                             BindingResult.MODEL_KEY_PREFIX + "todo", bindingResult,
-                                            "prev", a.getPrev(),
-                                            "next", a.getNext())));
+                                            "prev", a.prev(),
+                                            "next", a.next())));
         }
 
         var messages = new MessageSourceAccessor(messageSource,

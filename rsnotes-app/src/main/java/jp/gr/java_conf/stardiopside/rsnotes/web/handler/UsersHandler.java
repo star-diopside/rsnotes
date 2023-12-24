@@ -1,4 +1,4 @@
-package jp.gr.java_conf.stardiopside.rsnotes.handler;
+package jp.gr.java_conf.stardiopside.rsnotes.web.handler;
 
 import jp.gr.java_conf.stardiopside.rsnotes.service.UserService;
 import org.springframework.http.MediaType;

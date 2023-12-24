@@ -32,11 +32,11 @@ public class TodoServiceImpl implements TodoService {
     public Mono<Around<OptionalInt>> findAround(Integer id) {
         var prev = todoRepository
                 .findFirstByIdLessThanOrderByIdDesc(id, IdOnly.class)
-                .map(t -> OptionalInt.of(t.getId()))
+                .map(t -> OptionalInt.of(t.id()))
                 .defaultIfEmpty(OptionalInt.empty());
         var next = todoRepository
                 .findFirstByIdGreaterThanOrderByIdAsc(id, IdOnly.class)
-                .map(t -> OptionalInt.of(t.getId()))
+                .map(t -> OptionalInt.of(t.id()))
                 .defaultIfEmpty(OptionalInt.empty());
         return Mono.zip(prev, next)
                 .map(t -> new Around<>(t.getT1(), t.getT2()));
@@ -47,7 +47,7 @@ public class TodoServiceImpl implements TodoService {
         var todo = find(id);
         var around = findAround(id);
         return Mono.zip(todo, around)
-                .map(t -> new Node<>(t.getT1(), t.getT2().getPrev(), t.getT2().getNext()));
+                .map(t -> new Node<>(t.getT1(), t.getT2().prev(), t.getT2().next()));
     }
 
     @Override
