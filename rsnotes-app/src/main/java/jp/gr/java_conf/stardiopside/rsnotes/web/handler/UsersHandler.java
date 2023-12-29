@@ -1,6 +1,7 @@
 package jp.gr.java_conf.stardiopside.rsnotes.web.handler;
 
 import jp.gr.java_conf.stardiopside.rsnotes.service.UserService;
+import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -25,7 +26,7 @@ public class UsersHandler {
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
-        return parseId(request)
+        return RequestPathParser.parseId(request)
                 .flatMap(userService::find)
                 .flatMap(user -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                         .render("users/show",
@@ -51,10 +52,5 @@ public class UsersHandler {
 
     public Mono<ServerResponse> delete(ServerRequest request) {
         throw new UnsupportedOperationException();
-    }
-
-    private Mono<Integer> parseId(ServerRequest request) {
-        return Mono.fromSupplier(() -> Integer.valueOf(request.pathVariable("id")))
-                .onErrorResume(NumberFormatException.class, e -> Mono.empty());
     }
 }

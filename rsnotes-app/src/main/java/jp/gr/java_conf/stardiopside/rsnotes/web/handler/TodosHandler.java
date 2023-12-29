@@ -3,19 +3,17 @@ package jp.gr.java_conf.stardiopside.rsnotes.web.handler;
 import jp.gr.java_conf.stardiopside.rsnotes.data.entity.Todo;
 import jp.gr.java_conf.stardiopside.rsnotes.service.Around;
 import jp.gr.java_conf.stardiopside.rsnotes.service.TodoService;
+import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
+import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebExchangeDataBindings;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
-import org.springframework.web.bind.support.WebExchangeDataBinder;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 import java.net.URI;
 import java.util.Map;
@@ -25,12 +23,13 @@ import java.util.OptionalInt;
 public class TodosHandler {
 
     private final TodoService todoService;
-    private final Validator validator;
+    private final WebExchangeDataBindings webExchangeDataBindings;
     private final MessageSource messageSource;
 
-    public TodosHandler(TodoService todoService, Validator validator, MessageSource messageSource) {
+    public TodosHandler(TodoService todoService, WebExchangeDataBindings webExchangeDataBindings,
+                        MessageSource messageSource) {
         this.todoService = todoService;
-        this.validator = validator;
+        this.webExchangeDataBindings = webExchangeDataBindings;
         this.messageSource = messageSource;
     }
 
@@ -48,7 +47,7 @@ public class TodosHandler {
         var messageSuccess = request.session()
                 .flatMap(session -> Mono.justOrEmpty(session.getAttributes().remove("messages.success")))
                 .map(Object::toString);
-        return parseId(request)
+        return RequestPathParser.parseId(request)
                 .flatMap(todoService::findWithAround)
                 .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                         .render("todos/show",
@@ -65,13 +64,13 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> save(ServerRequest request) {
-        return bindAndValidate(request, new Todo())
+        return webExchangeDataBindings.bindAndValidate(request, new Todo())
                 .flatMap(tuple -> save(request, tuple.getT1(), tuple.getT2(),
                         "todos/create", "messages.success-create"));
     }
 
     public Mono<ServerResponse> edit(ServerRequest request) {
-        return parseId(request)
+        return RequestPathParser.parseId(request)
                 .flatMap(todoService::findWithAround)
                 .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                         .render("todos/edit",
@@ -82,8 +81,8 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> update(ServerRequest request) {
-        return parseId(request)
-                .flatMap(id -> bindAndValidate(request, Todo.builder().id(id).build()))
+        return RequestPathParser.parseId(request)
+                .flatMap(id -> webExchangeDataBindings.bindAndValidate(request, Todo.builder().id(id).build()))
                 .flatMap(tuple -> save(request, tuple.getT1(), tuple.getT2(),
                         "todos/edit", "messages.success-update"))
                 .switchIfEmpty(ServerResponse.notFound().build());
@@ -92,36 +91,14 @@ public class TodosHandler {
     public Mono<ServerResponse> delete(ServerRequest request) {
         var messages = new MessageSourceAccessor(messageSource,
                 request.exchange().getLocaleContext().getLocale());
-        return parseId(request)
-                .flatMap(id -> bind(request, Todo.builder().id(id).build()))
+        return RequestPathParser.parseId(request)
+                .flatMap(id -> webExchangeDataBindings.bind(request, Todo.builder().id(id).build()))
                 .flatMap(todo -> todoService.delete(todo)
                         .doOnSuccess(v -> request.session().subscribe(session ->
                                 session.getAttributes().put("messages.success",
                                         messages.getMessage("messages.success-delete"))))
                         .then(Mono.defer(() -> ServerResponse.seeOther(URI.create("/todos")).build())))
                 .switchIfEmpty(ServerResponse.notFound().build());
-    }
-
-    private Mono<Integer> parseId(ServerRequest request) {
-        return Mono.fromSupplier(() -> Integer.valueOf(request.pathVariable("id")))
-                .onErrorResume(NumberFormatException.class, e -> Mono.empty());
-    }
-
-    private Mono<Todo> bind(ServerRequest request, Todo todo) {
-        var binder = new WebExchangeDataBinder(todo);
-        return binder.bind(request.exchange())
-                .then(Mono.just(todo));
-    }
-
-    private Mono<Tuple2<Todo, BindingResult>> bindAndValidate(ServerRequest request, Todo todo) {
-        var binder = new WebExchangeDataBinder(todo);
-        binder.setValidator(validator);
-        return binder.bind(request.exchange())
-                .then(Mono.fromSupplier(() -> {
-                    binder.validate();
-                    var bindingResult = binder.getBindingResult();
-                    return Tuples.of(todo, bindingResult);
-                }));
     }
 
     private Mono<ServerResponse> save(ServerRequest request, Todo todo, BindingResult bindingResult,
