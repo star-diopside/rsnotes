@@ -1,7 +1,7 @@
 version: "3"
 services:
   postgres:
-    build: .
+    build: ./postgres
     ports:
       - "${POSTGRES_PORT}:5432"
     environment:
@@ -10,3 +10,7 @@ services:
       POSTGRES_DB: "${POSTGRES_DB}"
     volumes:
       - ./postgres/initdb/${POSTGRES_PROFILE}:/docker-entrypoint-initdb.d:ro
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "${REDIS_PORT}:6379"
