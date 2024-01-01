@@ -4,13 +4,16 @@ import jp.gr.java_conf.stardiopside.rsnotes.data.entity.FileData;
 import jp.gr.java_conf.stardiopside.rsnotes.data.entity.FileInfo;
 import jp.gr.java_conf.stardiopside.rsnotes.data.repository.FileDataRepository;
 import jp.gr.java_conf.stardiopside.rsnotes.data.repository.FileInfoRepository;
+import jp.gr.java_conf.stardiopside.rsnotes.data.value.DownloadData;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple3;
 import reactor.util.function.Tuples;
@@ -29,8 +32,18 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public Flux<FileInfo> list() {
+        return fileInfoRepository.findAll(Sort.by("id").ascending());
+    }
+
+    @Override
     public Mono<FileInfo> find(Long id) {
         return fileInfoRepository.findById(id);
+    }
+
+    @Override
+    public Mono<DownloadData> findDownloadData(Long id) {
+        return fileInfoRepository.findDownloadDataById(id);
     }
 
     @Override

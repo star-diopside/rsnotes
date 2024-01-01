@@ -63,6 +63,7 @@ public class RouterConfig {
                 .path("/files", builder -> builder
                         .GET("/create", filesHandler::create)
                         .GET("/{id}", filesHandler::show)
+                        .GET("/{id}/data", filesHandler::download)
                         .GET("/{id}/edit", filesHandler::edit)
                         .GET(filesHandler::index)
                         .POST(filesHandler::save)

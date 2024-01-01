@@ -4,13 +4,16 @@ import jp.gr.java_conf.stardiopside.rsnotes.service.FileService;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileForm;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebExchangeDataBindings;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Component
@@ -25,7 +28,8 @@ public class FilesHandler {
     }
 
     public Mono<ServerResponse> index(ServerRequest request) {
-        throw new UnsupportedOperationException();
+        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
+                .render("files/index", Map.of("files", fileService.list()));
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
@@ -33,6 +37,21 @@ public class FilesHandler {
                 .flatMap(fileService::find)
                 .flatMap(f -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                         .render("files/show", f))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> download(ServerRequest request) {
+        return RequestPathParser.parseId(request)
+                .flatMap(fileService::findDownloadData)
+                .flatMap(d -> ServerResponse.ok()
+                        .headers(h -> h.setContentDisposition(ContentDisposition
+                                .attachment()
+                                .filename(d.fileName(), StandardCharsets.UTF_8)
+                                .build()))
+                        .contentType(StringUtils.hasLength(d.contentType())
+                                ? MediaType.parseMediaType(d.contentType())
+                                : MediaType.APPLICATION_OCTET_STREAM)
+                        .bodyValue(d.data()))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
