@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 @Component
 public class TodosHandler {
@@ -106,7 +106,7 @@ public class TodosHandler {
         if (bindingResult.hasErrors()) {
             return Mono.justOrEmpty(todo.getId())
                     .flatMap(todoService::findAround)
-                    .defaultIfEmpty(new Around<>(OptionalInt.empty(), OptionalInt.empty()))
+                    .defaultIfEmpty(new Around<>(OptionalLong.empty(), OptionalLong.empty()))
                     .flatMap(a -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                             .render(errorRender,
                                     Map.of("todo", todo,

@@ -4,17 +4,17 @@ import jp.gr.java_conf.stardiopside.rsnotes.data.entity.Todo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 public interface TodoService {
 
     Flux<Todo> list();
 
-    Mono<Todo> find(Integer id);
+    Mono<Todo> find(Long id);
 
-    Mono<Around<OptionalInt>> findAround(Integer id);
+    Mono<Around<OptionalLong>> findAround(Long id);
 
-    Mono<Node<Todo, OptionalInt>> findWithAround(Integer id);
+    Mono<Node<Todo, OptionalLong>> findWithAround(Long id);
 
     Mono<Todo> save(Todo todo);
 

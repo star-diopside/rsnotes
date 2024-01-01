@@ -8,12 +8,12 @@ public final class RequestPathParser {
     private RequestPathParser() {
     }
 
-    public static Mono<Integer> parseInt(ServerRequest request, String variableName) {
-        return Mono.fromSupplier(() -> Integer.valueOf(request.pathVariable(variableName)))
+    public static Mono<Long> parseLong(ServerRequest request, String variableName) {
+        return Mono.fromSupplier(() -> Long.valueOf(request.pathVariable(variableName)))
                 .onErrorResume(NumberFormatException.class, e -> Mono.empty());
     }
 
-    public static Mono<Integer> parseId(ServerRequest request) {
-        return parseInt(request, "id");
+    public static Mono<Long> parseId(ServerRequest request) {
+        return parseLong(request, "id");
     }
 }

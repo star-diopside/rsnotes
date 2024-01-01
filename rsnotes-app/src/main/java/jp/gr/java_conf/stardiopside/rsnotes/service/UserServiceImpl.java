@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> find(Integer id) {
+    public Mono<User> find(Long id) {
         return userRepository.findById(id);
     }
 

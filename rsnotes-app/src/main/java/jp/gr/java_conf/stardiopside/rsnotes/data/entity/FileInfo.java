@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -22,14 +21,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @With
-@Table("todos")
-public class Todo {
+@Table
+public class FileInfo {
 
     @Id
     private Long id;
 
-    @Length(max = 2048)
-    private String text;
+    private String fileName;
+
+    private String contentType;
+
+    private Integer length;
+
+    private String hashValue;
 
     @CreatedDate
     @InsertOnlyProperty
