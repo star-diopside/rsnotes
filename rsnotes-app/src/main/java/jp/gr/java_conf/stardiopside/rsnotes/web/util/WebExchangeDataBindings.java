@@ -10,6 +10,6 @@ public interface WebExchangeDataBindings {
 
     <T> Mono<Result<T>> bindAndValidate(ServerRequest request, T target);
 
-    public record Result<T>(T target, BindingResult bindingResult) {
+    record Result<T>(T target, BindingResult bindingResult) {
     }
 }

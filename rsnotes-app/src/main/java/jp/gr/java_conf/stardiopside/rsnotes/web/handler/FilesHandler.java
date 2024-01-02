@@ -8,6 +8,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -67,7 +68,9 @@ public class FilesHandler {
                     var bindingResult = r.bindingResult();
                     if (bindingResult.hasErrors()) {
                         return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                                .render("files/create", Map.of("form", form));
+                                .render("files/create",
+                                        Map.of("form", form,
+                                                BindingResult.MODEL_KEY_PREFIX + "form", bindingResult));
                     }
 
                     return fileService.save(form.getFile())
