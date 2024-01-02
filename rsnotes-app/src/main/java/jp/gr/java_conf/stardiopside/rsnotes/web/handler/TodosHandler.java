@@ -7,7 +7,6 @@ import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebExchangeDataBindings;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -37,10 +36,9 @@ public class TodosHandler {
         var messageSuccess = request.session()
                 .flatMap(session -> Mono.justOrEmpty(session.getAttributes().remove("messages.success")))
                 .map(Object::toString);
-        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                .render("todos/index",
-                        Map.of("todos", todoService.list(),
-                                "success", messageSuccess));
+        return ServerResponse.ok().render("todos/index",
+                Map.of("todos", todoService.list(),
+                        "success", messageSuccess));
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
@@ -49,18 +47,16 @@ public class TodosHandler {
                 .map(Object::toString);
         return RequestPathParser.parseId(request)
                 .flatMap(todoService::findWithAround)
-                .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                        .render("todos/show",
-                                Map.of("todo", todo.item(),
-                                        "prev", todo.prev(),
-                                        "next", todo.next(),
-                                        "success", messageSuccess)))
+                .flatMap(todo -> ServerResponse.ok().render("todos/show",
+                        Map.of("todo", todo.item(),
+                                "prev", todo.prev(),
+                                "next", todo.next(),
+                                "success", messageSuccess)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> create(ServerRequest request) {
-        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                .render("todos/create", new Todo());
+        return ServerResponse.ok().render("todos/create", new Todo());
     }
 
     public Mono<ServerResponse> save(ServerRequest request) {
@@ -72,11 +68,10 @@ public class TodosHandler {
     public Mono<ServerResponse> edit(ServerRequest request) {
         return RequestPathParser.parseId(request)
                 .flatMap(todoService::findWithAround)
-                .flatMap(todo -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                        .render("todos/edit",
-                                Map.of("todo", todo.item(),
-                                        "prev", todo.prev(),
-                                        "next", todo.next())))
+                .flatMap(todo -> ServerResponse.ok().render("todos/edit",
+                        Map.of("todo", todo.item(),
+                                "prev", todo.prev(),
+                                "next", todo.next())))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -107,12 +102,11 @@ public class TodosHandler {
             return Mono.justOrEmpty(todo.getId())
                     .flatMap(todoService::findAround)
                     .defaultIfEmpty(new Around<>(OptionalLong.empty(), OptionalLong.empty()))
-                    .flatMap(a -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                            .render(errorRender,
-                                    Map.of("todo", todo,
-                                            BindingResult.MODEL_KEY_PREFIX + "todo", bindingResult,
-                                            "prev", a.prev(),
-                                            "next", a.next())));
+                    .flatMap(a -> ServerResponse.ok().render(errorRender,
+                            Map.of("todo", todo,
+                                    BindingResult.MODEL_KEY_PREFIX + "todo", bindingResult,
+                                    "prev", a.prev(),
+                                    "next", a.next())));
         }
 
         var messages = new MessageSourceAccessor(messageSource,

@@ -29,15 +29,14 @@ public class FilesHandler {
     }
 
     public Mono<ServerResponse> index(ServerRequest request) {
-        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                .render("files/index", Map.of("files", fileService.list()));
+        return ServerResponse.ok().render("files/index",
+                Map.of("files", fileService.list()));
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
         return RequestPathParser.parseId(request)
                 .flatMap(fileService::findFileInfo)
-                .flatMap(f -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                        .render("files/show", f))
+                .flatMap(f -> ServerResponse.ok().render("files/show", f))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -57,8 +56,8 @@ public class FilesHandler {
     }
 
     public Mono<ServerResponse> create(ServerRequest request) {
-        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                .render("files/create", Map.of("form", new FileForm()));
+        return ServerResponse.ok().render("files/create",
+                Map.of("form", new FileForm()));
     }
 
     public Mono<ServerResponse> save(ServerRequest request) {
@@ -67,10 +66,9 @@ public class FilesHandler {
                     var form = r.target();
                     var bindingResult = r.bindingResult();
                     if (bindingResult.hasErrors()) {
-                        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                                .render("files/create",
-                                        Map.of("form", form,
-                                                BindingResult.MODEL_KEY_PREFIX + "form", bindingResult));
+                        return ServerResponse.ok().render("files/create",
+                                Map.of("form", form,
+                                        BindingResult.MODEL_KEY_PREFIX + "form", bindingResult));
                     }
 
                     return fileService.save(form.getFile())
