@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple3;
-import reactor.util.function.Tuples;
 
 import java.nio.ByteBuffer;
 
@@ -37,7 +35,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Mono<FileInfo> find(Long id) {
+    public Mono<FileInfo> findFileInfo(Long id) {
         return fileInfoRepository.findById(id);
     }
 
@@ -49,36 +47,44 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public Mono<FileInfo> save(FilePart filePart) {
-        Mono<Tuple3<ByteBuffer, Integer, String>> content = filePart.content()
-                .collectList()
-                .map(dataBuffers -> {
-                    int length = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
-                    var byteBuffer = ByteBuffer.allocate(length);
-                    for (var dataBuffer : dataBuffers) {
-                        try (var iterator = dataBuffer.readableByteBuffers()) {
-                            iterator.forEachRemaining(byteBuffer::put);
-                        }
-                    }
-                    var hashValue = new DigestUtils(MessageDigestAlgorithms.SHA_256)
-                            .digestAsHex(byteBuffer.flip());
-                    return Tuples.of(byteBuffer.rewind(), length, hashValue);
-                })
-                .cache();
+        Mono<Content> content = Content.from(filePart);
 
         Mono<FileInfo> fileInfo = content
-                .flatMap(t -> fileInfoRepository.save(FileInfo.builder()
+                .flatMap(c -> fileInfoRepository.save(FileInfo.builder()
                         .fileName(filePart.filename())
                         .contentType(filePart.headers().getFirst(HttpHeaders.CONTENT_TYPE))
-                        .length(t.getT2())
-                        .hashValue(t.getT3())
+                        .length(c.length())
+                        .hashValue(c.hashValue())
                         .build()))
                 .cache();
 
         return Mono.zip(fileInfo, content)
                 .flatMap(t -> fileDataRepository.save(FileData.builder()
                         .fileInfoId(t.getT1().getId())
-                        .data(t.getT2().getT1())
+                        .data(t.getT2().data())
                         .build()))
                 .then(fileInfo);
+    }
+
+    private record Content(ByteBuffer data, Integer length, String hashValue) {
+        private static Mono<Content> from(FilePart filePart) {
+            return filePart.content()
+                    .collectList()
+                    .map(dataBuffers -> {
+                        int length = dataBuffers.stream()
+                                .mapToInt(DataBuffer::readableByteCount)
+                                .sum();
+                        var byteBuffer = ByteBuffer.allocate(length);
+                        for (var dataBuffer : dataBuffers) {
+                            try (var iterator = dataBuffer.readableByteBuffers()) {
+                                iterator.forEachRemaining(byteBuffer::put);
+                            }
+                        }
+                        var hashValue = new DigestUtils(MessageDigestAlgorithms.SHA_256)
+                                .digestAsHex(byteBuffer.flip());
+                        return new Content(byteBuffer.rewind(), length, hashValue);
+                    })
+                    .cache();
+        }
     }
 }

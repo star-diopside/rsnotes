@@ -65,7 +65,7 @@ public class TodosHandler {
 
     public Mono<ServerResponse> save(ServerRequest request) {
         return webExchangeDataBindings.bindAndValidate(request, new Todo())
-                .flatMap(tuple -> save(request, tuple.getT1(), tuple.getT2(),
+                .flatMap(r -> save(request, r.target(), r.bindingResult(),
                         "todos/create", "messages.success-create"));
     }
 
@@ -83,7 +83,7 @@ public class TodosHandler {
     public Mono<ServerResponse> update(ServerRequest request) {
         return RequestPathParser.parseId(request)
                 .flatMap(id -> webExchangeDataBindings.bindAndValidate(request, Todo.builder().id(id).build()))
-                .flatMap(tuple -> save(request, tuple.getT1(), tuple.getT2(),
+                .flatMap(r -> save(request, r.target(), r.bindingResult(),
                         "todos/edit", "messages.success-update"))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }

@@ -34,7 +34,7 @@ public class FilesHandler {
 
     public Mono<ServerResponse> show(ServerRequest request) {
         return RequestPathParser.parseId(request)
-                .flatMap(fileService::find)
+                .flatMap(fileService::findFileInfo)
                 .flatMap(f -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                         .render("files/show", f))
                 .switchIfEmpty(ServerResponse.notFound().build());
@@ -62,9 +62,9 @@ public class FilesHandler {
 
     public Mono<ServerResponse> save(ServerRequest request) {
         return webExchangeDataBindings.bindAndValidate(request, new FileForm())
-                .flatMap(tuple -> {
-                    var form = tuple.getT1();
-                    var bindingResult = tuple.getT2();
+                .flatMap(r -> {
+                    var form = r.target();
+                    var bindingResult = r.bindingResult();
                     if (bindingResult.hasErrors()) {
                         return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
                                 .render("files/create", Map.of("form", form));

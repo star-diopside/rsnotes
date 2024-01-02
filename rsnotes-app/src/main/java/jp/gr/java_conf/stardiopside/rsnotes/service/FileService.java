@@ -10,7 +10,7 @@ public interface FileService {
 
     Flux<FileInfo> list();
 
-    Mono<FileInfo> find(Long id);
+    Mono<FileInfo> findFileInfo(Long id);
 
     Mono<DownloadData> findDownloadData(Long id);
 
