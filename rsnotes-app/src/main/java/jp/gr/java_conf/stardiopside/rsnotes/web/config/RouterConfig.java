@@ -66,8 +66,8 @@ public class RouterConfig {
                         .GET("/{id}/data", filesHandler::download)
                         .GET("/{id}/edit", filesHandler::edit)
                         .GET(filesHandler::index)
+                        .POST("/{id}/put", filesHandler::update)
                         .POST(filesHandler::save)
-                        .PUT("/{id}", filesHandler::update)
                         .DELETE("/{id}", filesHandler::delete))
                 .build();
     }

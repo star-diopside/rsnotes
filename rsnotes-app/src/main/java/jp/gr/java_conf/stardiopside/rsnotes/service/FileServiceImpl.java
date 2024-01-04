@@ -5,6 +5,7 @@ import jp.gr.java_conf.stardiopside.rsnotes.data.entity.FileInfo;
 import jp.gr.java_conf.stardiopside.rsnotes.data.repository.FileDataRepository;
 import jp.gr.java_conf.stardiopside.rsnotes.data.repository.FileInfoRepository;
 import jp.gr.java_conf.stardiopside.rsnotes.data.value.DownloadData;
+import jp.gr.java_conf.stardiopside.rsnotes.data.value.FileInfoData;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -45,6 +47,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public Mono<FileInfoData> findFileInfoData(Long id) {
+        return fileInfoRepository.findFileInfoDataById(id);
+    }
+
+    @Override
     @Transactional
     public Mono<FileInfo> save(FilePart filePart) {
         Mono<Content> content = Content.from(filePart);
@@ -64,6 +71,48 @@ public class FileServiceImpl implements FileService {
                         .data(t.getT2().data())
                         .build()))
                 .then(fileInfo);
+    }
+
+    @Override
+    @Transactional
+    public Mono<FileInfo> update(FilePart filePart, FileInfo fileInfo, Integer fileDataVersion) {
+        Mono<FileInfo> newFileInfo = fileInfoRepository.findById(fileInfo.getId());
+
+        Mono<FileData> newFileData;
+        if (filePart != null && StringUtils.hasLength(filePart.filename())) {
+            Mono<Content> content = Content.from(filePart);
+
+            newFileInfo = Mono.zip(newFileInfo, content)
+                    .map(t -> {
+                        var info = t.getT1();
+                        info.setFileName(filePart.filename());
+                        info.setContentType(filePart.headers().getFirst(HttpHeaders.CONTENT_TYPE));
+                        info.setLength(t.getT2().length());
+                        info.setHashValue(t.getT2().hashValue());
+                        return info;
+                    });
+
+            Mono<IdOnly> fileDataId = fileDataRepository.findByFileInfoId(fileInfo.getId(), IdOnly.class);
+            newFileData = Mono.zip(fileDataId, content)
+                    .flatMap(t -> fileDataRepository.save(FileData.builder()
+                            .id(t.getT1().id())
+                            .fileInfoId(fileInfo.getId())
+                            .data(t.getT2().data())
+                            .version(fileDataVersion)
+                            .build()));
+        } else {
+            newFileData = Mono.empty();
+        }
+
+        return newFileData.then(newFileInfo
+                .map(f -> {
+                    if (StringUtils.hasLength(fileInfo.getFileName())) {
+                        f.setFileName(fileInfo.getFileName());
+                    }
+                    f.setVersion(fileInfo.getVersion());
+                    return f;
+                })
+                .flatMap(fileInfoRepository::save));
     }
 
     private record Content(ByteBuffer data, Integer length, String hashValue) {

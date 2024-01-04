@@ -1,7 +1,8 @@
 package jp.gr.java_conf.stardiopside.rsnotes.web.handler;
 
 import jp.gr.java_conf.stardiopside.rsnotes.service.FileService;
-import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileForm;
+import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileCreateForm;
+import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileEditForm;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebExchangeDataBindings;
 import org.springframework.http.ContentDisposition;
@@ -57,11 +58,11 @@ public class FilesHandler {
 
     public Mono<ServerResponse> create(ServerRequest request) {
         return ServerResponse.ok().render("files/create",
-                Map.of("form", new FileForm()));
+                Map.of("form", new FileCreateForm()));
     }
 
     public Mono<ServerResponse> save(ServerRequest request) {
-        return webExchangeDataBindings.bindAndValidate(request, new FileForm())
+        return webExchangeDataBindings.bindAndValidate(request, new FileCreateForm())
                 .flatMap(r -> {
                     var form = r.target();
                     var bindingResult = r.bindingResult();
@@ -78,11 +79,28 @@ public class FilesHandler {
     }
 
     public Mono<ServerResponse> edit(ServerRequest request) {
-        throw new UnsupportedOperationException();
+        return RequestPathParser.parseId(request)
+                .flatMap(fileService::findFileInfoData)
+                .flatMap(f -> ServerResponse.ok().render("files/edit",
+                        Map.of("form", new FileEditForm(f))));
     }
 
     public Mono<ServerResponse> update(ServerRequest request) {
-        throw new UnsupportedOperationException();
+        return RequestPathParser.parseId(request)
+                .flatMap(id -> webExchangeDataBindings.bindAndValidate(request, new FileEditForm(id)))
+                .flatMap(r -> {
+                    var form = r.target();
+                    var bindingResult = r.bindingResult();
+                    if (bindingResult.hasErrors()) {
+                        return ServerResponse.ok().render("files/edit",
+                                Map.of("form", form,
+                                        BindingResult.MODEL_KEY_PREFIX + "form", bindingResult));
+                    }
+
+                    return fileService.update(form.getFile(), form.toFileInfo(), form.getFileDataVersion())
+                            .flatMap(f -> ServerResponse.seeOther(UriComponentsBuilder
+                                    .fromUriString("/files/{id}").build(f.getId())).build());
+                });
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {

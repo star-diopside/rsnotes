@@ -6,7 +6,7 @@ import lombok.Data;
 import org.springframework.http.codec.multipart.FilePart;
 
 @Data
-public class FileForm {
+public class FileCreateForm {
 
     @NotNull
     @RequiredFilePart
