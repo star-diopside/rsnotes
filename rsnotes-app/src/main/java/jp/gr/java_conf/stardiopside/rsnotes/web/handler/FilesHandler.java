@@ -82,7 +82,8 @@ public class FilesHandler {
         return RequestPathParser.parseId(request)
                 .flatMap(fileService::findFileInfoData)
                 .flatMap(f -> ServerResponse.ok().render("files/edit",
-                        Map.of("form", new FileEditForm(f))));
+                        Map.of("form", new FileEditForm(f))))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> update(ServerRequest request) {

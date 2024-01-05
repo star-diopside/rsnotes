@@ -13,7 +13,7 @@
 <div class="container">
   <div layout:fragment="content">
     <h1 class="pb-2 mt-4 mb-2 border-bottom">ファイル登録</h1>
-    <form th:action="@{/files}" th:method="post" th:object="${form}" action="show.html" enctype="multipart/form-data" role="form">
+    <form th:action="@{{path}/files(path=${path})}" th:method="post" th:object="${form}" action="show.html" enctype="multipart/form-data" role="form">
       <div th:errors="*{global}" class="alert alert-danger" role="alert">エラーメッセージ</div>
       <div th:replace="~{files/_form :: content}">
         入力エリア
