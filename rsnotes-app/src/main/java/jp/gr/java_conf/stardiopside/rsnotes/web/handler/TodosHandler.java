@@ -62,7 +62,7 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> save(ServerRequest request) {
-        return webExchangeDataBindings.bindAndValidate(request, new Todo())
+        return webExchangeDataBindings.bindAndValidate(request, Todo.class)
                 .flatMap(r -> save(request, r.target(), r.bindingResult(),
                         "todos/create", "messages.success-create"));
     }
@@ -92,7 +92,8 @@ public class TodosHandler {
                 .flatMap(id -> webExchangeDataBindings.bind(request, Todo.builder().id(id).build()))
                 .map(Optional::of).defaultIfEmpty(Optional.empty())
                 .flatMap(o -> o
-                        .map(todo -> todoService.delete(todo)
+                        .map(r -> r.getOrError()
+                                .flatMap(todoService::delete)
                                 .doOnSuccess(v -> request.session().subscribe(session ->
                                         session.getAttributes().put(Constants.MESSAGE_KEY_SUCCESS,
                                                 messages.getMessage("messages.success-delete"))))

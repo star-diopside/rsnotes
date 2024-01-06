@@ -80,7 +80,7 @@ public class FilesHandler {
     }
 
     public Mono<ServerResponse> save(ServerRequest request) {
-        return webExchangeDataBindings.bindAndValidate(request, new FileCreateForm())
+        return webExchangeDataBindings.bindAndValidate(request, FileCreateForm.class)
                 .flatMap(r -> {
                     var form = r.target();
                     var bindingResult = r.bindingResult();
@@ -142,7 +142,8 @@ public class FilesHandler {
                 .flatMap(id -> webExchangeDataBindings.bind(request, FileInfo.builder().id(id).build()))
                 .map(Optional::of).defaultIfEmpty(Optional.empty())
                 .flatMap(o -> o
-                        .map(info -> fileService.delete(info)
+                        .map(r -> r.getOrError()
+                                .flatMap(fileService::delete)
                                 .doOnSuccess(v -> request.session().subscribe(session ->
                                         session.getAttributes().put(Constants.MESSAGE_KEY_SUCCESS,
                                                 messages.getMessage("messages.success-delete"))))

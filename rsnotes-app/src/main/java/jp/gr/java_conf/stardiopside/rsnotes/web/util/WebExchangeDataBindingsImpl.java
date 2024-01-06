@@ -1,5 +1,6 @@
 package jp.gr.java_conf.stardiopside.rsnotes.web.util;
 
+import org.springframework.core.ResolvableType;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;
@@ -22,22 +23,56 @@ public class WebExchangeDataBindingsImpl implements WebExchangeDataBindings {
     }
 
     @Override
-    public <T> Mono<T> bind(ServerRequest request, T target) {
+    public <T> Mono<Result<T>> bind(ServerRequest request, T target,
+                                    Consumer<WebDataBinder> dataBinderCustomizer) {
         var binder = new WebExchangeDataBinder(target);
+        binder.setConversionService(conversionService);
+        dataBinderCustomizer.accept(binder);
         return binder.bind(request.exchange())
-                .then(Mono.just(target));
+                .then(Mono.fromSupplier(() -> new Result<>(target, binder.getBindingResult())));
+    }
+
+    @Override
+    public <T> Mono<Result<T>> bind(ServerRequest request, Class<T> targetType,
+                                    Consumer<WebDataBinder> dataBinderCustomizer) {
+        var binder = new WebExchangeDataBinder(null);
+        binder.setTargetType(ResolvableType.forClass(targetType));
+        binder.setConversionService(conversionService);
+        dataBinderCustomizer.accept(binder);
+        return binder.construct(request.exchange())
+                .then(binder.bind(request.exchange()))
+                .then(Mono.fromSupplier(() -> new Result<>(targetType.cast(binder.getTarget()),
+                        binder.getBindingResult())));
     }
 
     @Override
     public <T> Mono<Result<T>> bindAndValidate(ServerRequest request, T target,
-                                               Consumer<WebDataBinder> initBinder) {
+                                               Consumer<WebDataBinder> dataBinderCustomizer) {
         var binder = new WebExchangeDataBinder(target);
         binder.setConversionService(conversionService);
         binder.setValidator(validator);
-        initBinder.accept(binder);
+        dataBinderCustomizer.accept(binder);
         return binder.bind(request.exchange())
                 .then(Mono.fromSupplier(() -> {
                     binder.validate();
+                    var bindingResult = binder.getBindingResult();
+                    return new Result<>(target, bindingResult);
+                }));
+    }
+
+    @Override
+    public <T> Mono<Result<T>> bindAndValidate(ServerRequest request, Class<T> targetType,
+                                               Consumer<WebDataBinder> dataBinderCustomizer) {
+        var binder = new WebExchangeDataBinder(null);
+        binder.setTargetType(ResolvableType.forClass(targetType));
+        binder.setConversionService(conversionService);
+        binder.setValidator(validator);
+        dataBinderCustomizer.accept(binder);
+        return binder.construct(request.exchange())
+                .then(binder.bind(request.exchange()))
+                .then(Mono.fromSupplier(() -> {
+                    binder.validate();
+                    var target = targetType.cast(binder.getTarget());
                     var bindingResult = binder.getBindingResult();
                     return new Result<>(target, bindingResult);
                 }));
