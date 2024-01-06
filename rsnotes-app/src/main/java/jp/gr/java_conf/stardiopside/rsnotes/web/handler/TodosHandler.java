@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalLong;
 
 @Component
@@ -88,12 +89,14 @@ public class TodosHandler {
                 request.exchange().getLocaleContext().getLocale());
         return RequestPathParser.parseId(request)
                 .flatMap(id -> webExchangeDataBindings.bind(request, Todo.builder().id(id).build()))
-                .flatMap(todo -> todoService.delete(todo)
-                        .doOnSuccess(v -> request.session().subscribe(session ->
-                                session.getAttributes().put("messages.success",
-                                        messages.getMessage("messages.success-delete"))))
-                        .then(Mono.defer(() -> ServerResponse.seeOther(URI.create("/todos")).build())))
-                .switchIfEmpty(ServerResponse.notFound().build());
+                .map(Optional::of).defaultIfEmpty(Optional.empty())
+                .flatMap(o -> o
+                        .map(todo -> todoService.delete(todo)
+                                .doOnSuccess(v -> request.session().subscribe(session ->
+                                        session.getAttributes().put("messages.success",
+                                                messages.getMessage("messages.success-delete"))))
+                                .then(ServerResponse.seeOther(URI.create("/todos")).build()))
+                        .orElse(ServerResponse.notFound().build()));
     }
 
     private Mono<ServerResponse> save(ServerRequest request, Todo todo, BindingResult bindingResult,

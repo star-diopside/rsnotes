@@ -1,5 +1,6 @@
 package jp.gr.java_conf.stardiopside.rsnotes.web.handler;
 
+import jp.gr.java_conf.stardiopside.rsnotes.data.entity.FileInfo;
 import jp.gr.java_conf.stardiopside.rsnotes.service.FileService;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileCreateForm;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileEditForm;
@@ -15,8 +16,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class FilesHandler {
@@ -105,6 +108,12 @@ public class FilesHandler {
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {
-        throw new UnsupportedOperationException();
+        return RequestPathParser.parseId(request)
+                .flatMap(id -> webExchangeDataBindings.bind(request, FileInfo.builder().id(id).build()))
+                .map(Optional::of).defaultIfEmpty(Optional.empty())
+                .flatMap(o -> o
+                        .map(info -> fileService.delete(info)
+                                .then(ServerResponse.seeOther(URI.create("/files")).build()))
+                        .orElse(ServerResponse.notFound().build()));
     }
 }

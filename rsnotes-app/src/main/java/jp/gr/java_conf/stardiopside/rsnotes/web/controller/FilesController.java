@@ -1,6 +1,7 @@
 package jp.gr.java_conf.stardiopside.rsnotes.web.controller;
 
 import jakarta.validation.Valid;
+import jp.gr.java_conf.stardiopside.rsnotes.data.entity.FileInfo;
 import jp.gr.java_conf.stardiopside.rsnotes.service.FileService;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileCreateForm;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileEditForm;
@@ -107,8 +108,7 @@ public class FilesController {
     }
 
     @PostMapping("/{id}/put")
-    public Mono<Rendering> update(@PathVariable("id") Long id,
-                                  @Valid @ModelAttribute("form") FileEditForm form,
+    public Mono<Rendering> update(@Valid @ModelAttribute("form") FileEditForm form,
                                   BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return Mono.just(Rendering.view("files/edit")
@@ -125,7 +125,14 @@ public class FilesController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        throw new UnsupportedOperationException();
+    public Mono<Rendering> delete(@ModelAttribute FileInfo info) {
+        if (info.getId() == null) {
+            return Mono.just(Rendering.view("errors/404")
+                    .status(HttpStatus.NOT_FOUND)
+                    .build());
+        } else {
+            return fileService.delete(info)
+                    .thenReturn(Rendering.redirectTo("/controller/files").build());
+        }
     }
 }

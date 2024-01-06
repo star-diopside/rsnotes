@@ -115,6 +115,11 @@ public class FileServiceImpl implements FileService {
                 .flatMap(fileInfoRepository::save));
     }
 
+    @Override
+    public Mono<Void> delete(FileInfo fileInfo) {
+        return fileInfoRepository.delete(fileInfo);
+    }
+
     private record Content(ByteBuffer data, Integer length, String hashValue) {
         private static Mono<Content> from(FilePart filePart) {
             return filePart.content()

@@ -21,4 +21,6 @@ public interface FileService {
 
     Mono<FileInfo> update(FilePart filePart, FileInfo fileInfo, Integer fileDataVersion);
 
+    Mono<Void> delete(FileInfo fileInfo);
+
 }

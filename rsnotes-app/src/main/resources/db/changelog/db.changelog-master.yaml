@@ -194,6 +194,7 @@ databaseChangeLog:
                     foreignKeyName: fk_file_data_file_info
                     referencedTableName: file_info
                     referencedColumnNames: id
+                    deleteCascade: true
               - column:
                   name: data
                   type: binary
