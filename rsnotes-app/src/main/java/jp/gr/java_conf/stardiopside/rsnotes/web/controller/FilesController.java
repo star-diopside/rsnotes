@@ -144,6 +144,9 @@ public class FilesController {
                                 .fromUriString("/controller/files/{id}")
                                 .build(f.getId())
                                 .toString())
+                        .build())
+                .defaultIfEmpty(Rendering.view("errors/404")
+                        .status(HttpStatus.NOT_FOUND)
                         .build());
     }
 

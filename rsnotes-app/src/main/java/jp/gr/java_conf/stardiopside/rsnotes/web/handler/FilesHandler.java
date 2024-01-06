@@ -131,7 +131,8 @@ public class FilesHandler {
                                             messages.getMessage("messages.success-update"))))
                             .flatMap(f -> ServerResponse.seeOther(UriComponentsBuilder
                                     .fromUriString("/files/{id}").build(f.getId())).build());
-                });
+                })
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {
