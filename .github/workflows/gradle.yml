@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Docker
-        run: docker compose -f rsnotes-docker/docker-compose.yml up --build -d
+        run: docker compose -f docker/rsnotes/docker-compose.yml up --build -d
 
       - name: Build with Gradle
         run: ./gradlew build
