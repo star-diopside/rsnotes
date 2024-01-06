@@ -68,6 +68,8 @@
       <div class="row mb-3">
         <div class="col-sm-12">
           <div class="float-end">
+            <a th:href="@{{path}/files(path=${path})}" class="btn btn-secondary" href="index.html" role="button">一覧</a>
+            <a th:href="@{{path}/files/{id}(path=${path},id=*{id})}" class="btn btn-secondary" href="show.html" role="button">詳細</a>
             <input type="submit" value="更新" class="btn btn-primary"/>
           </div>
         </div>
