@@ -11,6 +11,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.session:spring-session-data-redis")
+    implementation("org.apache.commons:commons-lang3")
+    implementation("commons-codec:commons-codec")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.liquibase:liquibase-core")

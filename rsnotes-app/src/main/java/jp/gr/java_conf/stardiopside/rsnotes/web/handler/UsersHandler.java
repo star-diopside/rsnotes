@@ -2,7 +2,6 @@ package jp.gr.java_conf.stardiopside.rsnotes.web.handler;
 
 import jp.gr.java_conf.stardiopside.rsnotes.service.UserService;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -20,17 +19,15 @@ public class UsersHandler {
     }
 
     public Mono<ServerResponse> index(ServerRequest request) {
-        return ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                .render("users/index",
-                        Map.of("users", userService.list()));
+        return ServerResponse.ok().render("users/index",
+                Map.of("users", userService.list()));
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
         return RequestPathParser.parseId(request)
                 .flatMap(userService::find)
-                .flatMap(user -> ServerResponse.ok().contentType(MediaType.TEXT_HTML)
-                        .render("users/show",
-                                Map.of("user", user)))
+                .flatMap(user -> ServerResponse.ok().render("users/show",
+                        Map.of("user", user)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 

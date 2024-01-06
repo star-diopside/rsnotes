@@ -7,6 +7,8 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestHandler;
+import org.springframework.security.web.server.csrf.XorServerCsrfTokenRequestAttributeHandler;
 
 @Configuration
 public class WebFluxSecurityConfig {
@@ -17,7 +19,15 @@ public class WebFluxSecurityConfig {
                 .authorizeExchange(spec -> spec
                         .anyExchange().authenticated())
                 .formLogin(Customizer.withDefaults())
+                .csrf(spec -> spec
+                        .csrfTokenRequestHandler(serverCsrfTokenRequestHandler()))
                 .build();
+    }
+
+    private ServerCsrfTokenRequestHandler serverCsrfTokenRequestHandler() {
+        var handler = new XorServerCsrfTokenRequestAttributeHandler();
+        handler.setTokenFromMultipartDataEnabled(true);
+        return handler;
     }
 
     @Bean

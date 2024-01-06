@@ -25,9 +25,9 @@ import java.time.LocalDateTime;
 public class Authority {
 
     @Id
-    private Integer id;
+    private Long id;
 
-    private Integer userId;
+    private Long userId;
 
     private String authority;
 

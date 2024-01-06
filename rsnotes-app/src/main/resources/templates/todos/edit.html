@@ -13,7 +13,7 @@
 <div class="container">
   <div layout:fragment="content">
     <h1 class="pb-2 mt-4 mb-2 border-bottom">TODO編集</h1>
-    <form th:action="@{/todos/{id}(id=${todo.id})}" th:method="put" th:object="${todo}" action="show.html" role="form">
+    <form th:action="@{/todos/{id}(id=*{id})}" th:method="put" th:object="${todo}" action="show.html" role="form">
       <div th:errors="*{global}" class="alert alert-danger" role="alert">エラーメッセージ</div>
       <div th:replace="~{todos/_form :: content}">
         入力エリア
@@ -22,30 +22,30 @@
       <div class="row mb-3">
         <label for="createdAt" class="col-form-label col-sm-2">作成日時</label>
         <div class="col-sm-10">
-          <input th:value="${#temporals.format(todo.createdAt, 'yyyy/MM/dd HH:mm:ss')}" type="text" readonly class="form-control-plaintext" id="createdAt"/>
+          <input th:value="*{#temporals.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}" type="text" readonly class="form-control-plaintext" id="createdAt"/>
         </div>
       </div>
       <div class="row mb-3">
         <label for="updatedAt" class="col-form-label col-sm-2">更新日時</label>
         <div class="col-sm-10">
-          <input th:value="${#temporals.format(todo.updatedAt, 'yyyy/MM/dd HH:mm:ss')}" type="text" readonly class="form-control-plaintext" id="updatedAt"/>
+          <input th:value="*{#temporals.format(updatedAt, 'yyyy/MM/dd HH:mm:ss')}" type="text" readonly class="form-control-plaintext" id="updatedAt"/>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-sm-12">
           <div class="float-start">
             <th:block th:switch="${prev.isPresent()}">
-              <a th:case="true" th:href="@{/todos/{id}/edit(id=${prev.getAsInt()})}" class="btn btn-secondary" href="edit.html" role="button">前へ</a>
+              <a th:case="true" th:href="@{/todos/{id}/edit(id=${prev.getAsLong()})}" class="btn btn-secondary" href="edit.html" role="button">前へ</a>
               <a th:case="false" class="btn btn-secondary disabled" role="button" aria-disabled="true">前へ</a>
             </th:block>
             <th:block th:switch="${next.isPresent()}">
-              <a th:case="true" th:href="@{/todos/{id}/edit(id=${next.getAsInt()})}" class="btn btn-secondary" href="edit.html" role="button">次へ</a>
+              <a th:case="true" th:href="@{/todos/{id}/edit(id=${next.getAsLong()})}" class="btn btn-secondary" href="edit.html" role="button">次へ</a>
               <a th:case="false" class="btn btn-secondary disabled" role="button" aria-disabled="true">次へ</a>
             </th:block>
           </div>
           <div class="float-end">
             <a th:href="@{/todos}" class="btn btn-secondary" href="index.html" role="button">一覧</a>
-            <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-secondary" href="show.html" role="button">詳細</a>
+            <a th:href="@{/todos/{id}(id=*{id})}" class="btn btn-secondary" href="show.html" role="button">詳細</a>
             <input type="submit" value="更新" class="btn btn-primary"/>
           </div>
         </div>

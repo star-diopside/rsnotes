@@ -1,5 +1,6 @@
 package jp.gr.java_conf.stardiopside.rsnotes.web.config;
 
+import jp.gr.java_conf.stardiopside.rsnotes.web.handler.FilesHandler;
 import jp.gr.java_conf.stardiopside.rsnotes.web.handler.HomeHandler;
 import jp.gr.java_conf.stardiopside.rsnotes.web.handler.TodosHandler;
 import jp.gr.java_conf.stardiopside.rsnotes.web.handler.UsersHandler;
@@ -12,7 +13,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import java.net.URI;
 
 @Configuration
-public class WebConfig {
+public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> route() {
@@ -53,6 +54,21 @@ public class WebConfig {
                         .POST(usersHandler::save)
                         .PUT("/{id}", usersHandler::update)
                         .DELETE("/{id}", usersHandler::delete))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> routeFiles(FilesHandler filesHandler) {
+        return RouterFunctions.route()
+                .path("/files", builder -> builder
+                        .GET("/create", filesHandler::create)
+                        .GET("/{id}", filesHandler::show)
+                        .GET("/{id}/data", filesHandler::download)
+                        .GET("/{id}/edit", filesHandler::edit)
+                        .GET(filesHandler::index)
+                        .POST("/{id}/put", filesHandler::update)
+                        .POST(filesHandler::save)
+                        .DELETE("/{id}", filesHandler::delete))
                 .build();
     }
 }

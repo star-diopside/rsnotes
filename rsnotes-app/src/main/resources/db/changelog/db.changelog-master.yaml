@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: int
+                  type: bigint
                   autoIncrement: true
                   constraints:
                     primaryKey: true
@@ -52,13 +52,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: int
+                  type: bigint
                   autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
                   name: user_id
-                  type: int
+                  type: bigint
                   constraints:
                     nullable: false
                     foreignKeyName: fk_authorities_users
@@ -98,13 +98,106 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: int
+                  type: bigint
                   autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
                   name: text
                   type: varchar(2048)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: varchar(32)
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_by
+                  type: varchar(32)
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: file_info
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: file_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content_type
+                  type: varchar(255)
+              - column:
+                  name: length
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: hash_value
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: varchar(32)
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_by
+                  type: varchar(32)
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: file_data
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: file_info_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    unique: true
+                    foreignKeyName: fk_file_data_file_info
+                    referencedTableName: file_info
+                    referencedColumnNames: id
+                    deleteCascade: true
+              - column:
+                  name: data
+                  type: binary
                   constraints:
                     nullable: false
               - column:

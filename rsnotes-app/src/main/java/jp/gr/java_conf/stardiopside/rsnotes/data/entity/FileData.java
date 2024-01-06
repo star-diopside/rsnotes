@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -15,6 +14,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,14 +22,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @With
-@Table("todos")
-public class Todo {
+@Table
+public class FileData {
 
     @Id
     private Long id;
 
-    @Length(max = 2048)
-    private String text;
+    private Long fileInfoId;
+
+    private ByteBuffer data;
 
     @CreatedDate
     @InsertOnlyProperty
