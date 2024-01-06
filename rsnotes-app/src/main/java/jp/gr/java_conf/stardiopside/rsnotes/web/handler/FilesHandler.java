@@ -4,8 +4,11 @@ import jp.gr.java_conf.stardiopside.rsnotes.data.entity.FileInfo;
 import jp.gr.java_conf.stardiopside.rsnotes.service.FileService;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileCreateForm;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileEditForm;
+import jp.gr.java_conf.stardiopside.rsnotes.web.util.Constants;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebExchangeDataBindings;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -26,21 +29,33 @@ public class FilesHandler {
 
     private final FileService fileService;
     private final WebExchangeDataBindings webExchangeDataBindings;
+    private final MessageSource messageSource;
 
-    public FilesHandler(FileService fileService, WebExchangeDataBindings webExchangeDataBindings) {
+    public FilesHandler(FileService fileService, WebExchangeDataBindings webExchangeDataBindings,
+                        MessageSource messageSource) {
         this.fileService = fileService;
         this.webExchangeDataBindings = webExchangeDataBindings;
+        this.messageSource = messageSource;
     }
 
     public Mono<ServerResponse> index(ServerRequest request) {
+        var messageSuccess = request.session()
+                .flatMap(session -> Mono.justOrEmpty(session.getAttributes()
+                        .remove(Constants.MESSAGE_KEY_SUCCESS)));
         return ServerResponse.ok().render("files/index",
-                Map.of("files", fileService.list()));
+                Map.of("files", fileService.list(),
+                        "success", messageSuccess));
     }
 
     public Mono<ServerResponse> show(ServerRequest request) {
+        var messageSuccess = request.session()
+                .flatMap(session -> Mono.justOrEmpty(session.getAttributes()
+                        .remove(Constants.MESSAGE_KEY_SUCCESS)));
         return RequestPathParser.parseId(request)
                 .flatMap(fileService::findFileInfo)
-                .flatMap(f -> ServerResponse.ok().render("files/show", f))
+                .flatMap(f -> ServerResponse.ok().render("files/show",
+                        Map.of("fileInfo", f,
+                                "success", messageSuccess)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -75,7 +90,13 @@ public class FilesHandler {
                                         BindingResult.MODEL_KEY_PREFIX + "form", bindingResult));
                     }
 
+                    var messages = new MessageSourceAccessor(messageSource,
+                            request.exchange().getLocaleContext().getLocale());
+
                     return fileService.save(form.getFile())
+                            .doOnNext(info -> request.session().subscribe(session ->
+                                    session.getAttributes().put(Constants.MESSAGE_KEY_SUCCESS,
+                                            messages.getMessage("messages.success-create"))))
                             .flatMap(f -> ServerResponse.seeOther(UriComponentsBuilder
                                     .fromUriString("/files/{id}").build(f.getId())).build());
                 });
@@ -101,18 +122,29 @@ public class FilesHandler {
                                         BindingResult.MODEL_KEY_PREFIX + "form", bindingResult));
                     }
 
+                    var messages = new MessageSourceAccessor(messageSource,
+                            request.exchange().getLocaleContext().getLocale());
+
                     return fileService.update(form.getFile(), form.toFileInfo(), form.getFileDataVersion())
+                            .doOnNext(info -> request.session().subscribe(session ->
+                                    session.getAttributes().put(Constants.MESSAGE_KEY_SUCCESS,
+                                            messages.getMessage("messages.success-update"))))
                             .flatMap(f -> ServerResponse.seeOther(UriComponentsBuilder
                                     .fromUriString("/files/{id}").build(f.getId())).build());
                 });
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {
+        var messages = new MessageSourceAccessor(messageSource,
+                request.exchange().getLocaleContext().getLocale());
         return RequestPathParser.parseId(request)
                 .flatMap(id -> webExchangeDataBindings.bind(request, FileInfo.builder().id(id).build()))
                 .map(Optional::of).defaultIfEmpty(Optional.empty())
                 .flatMap(o -> o
                         .map(info -> fileService.delete(info)
+                                .doOnSuccess(v -> request.session().subscribe(session ->
+                                        session.getAttributes().put(Constants.MESSAGE_KEY_SUCCESS,
+                                                messages.getMessage("messages.success-delete"))))
                                 .then(ServerResponse.seeOther(URI.create("/files")).build()))
                         .orElse(ServerResponse.notFound().build()));
     }
