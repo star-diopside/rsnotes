@@ -11,6 +11,3 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
-logging:
-  level:
-    "org.springframework.r2dbc": debug

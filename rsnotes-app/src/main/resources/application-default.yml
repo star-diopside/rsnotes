@@ -1,0 +1,12 @@
+spring:
+  codec:
+    log-request-details: true
+logging:
+  group:
+    r2dbc:
+      - "org.springframework.r2dbc"
+      - "org.springframework.data.r2dbc"
+  level:
+    web: DEBUG
+    r2dbc: DEBUG
+    "jp.gr.java_conf.stardiopside.rsnotes": DEBUG
