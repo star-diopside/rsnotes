@@ -28,7 +28,7 @@
       <tbody th:remove="all-but-first" th:each="file : ${files}">
         <tr>
           <td class="align-baseline" th:text="${file.id}">1</td>
-          <td class="align-baseline"><a th:href="@{{path}/files/{id}/data(path=${path},id=${file.id})}" th:text="${file.fileName}">xxxx.txt</a></td>
+          <td class="align-baseline"><a th:href="@{{path}/files/{id}/data(path=${path},id=${file.id})}" th:text="${file.fileName}" href="javascript:void(0);">xxxx.txt</a></td>
           <td class="align-baseline" th:text="${#numbers.formatInteger(file.length, 1, 'COMMA')}">1,024</td>
           <td class="align-baseline" th:text="${#temporals.format(file.createdAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>
           <td class="align-baseline" th:text="${#temporals.format(file.updatedAt, 'yyyy/MM/dd HH:mm:ss')}">2021/01/01 00:00:00</td>

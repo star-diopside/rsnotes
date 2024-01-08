@@ -23,7 +23,7 @@
       <div class="row mb-3">
         <label for="fileName" class="col-form-label col-sm-2">ファイル名</label>
         <div class="col-sm-10">
-          <input th:field="*{fileName}" type="text" readonly class="form-control-plaintext" id="fileName"/>
+          <span class="form-control-plaintext"><a th:href="@{{path}/files/{id}/data(path=${path},id=*{id})}" th:text="*{fileName}" id="fileName" href="javascript:void(0);">xxxx.txt</a></span>
         </div>
       </div>
       <div class="row mb-3">
@@ -35,33 +35,33 @@
       <div class="row mb-3">
         <label for="contentType" class="col-form-label col-sm-2">コンテンツタイプ</label>
         <div class="col-sm-10">
-          <input th:field="*{contentType}" type="text" readonly class="form-control-plaintext" id="contentType"/>
+          <input th:field="*{contentType}" type="text" readonly class="form-control-plaintext" id="contentType" value="xxxx"/>
         </div>
       </div>
       <div class="row mb-3">
         <label for="length" class="col-form-label col-sm-2">ファイルサイズ</label>
         <div class="col-sm-10">
-          <input th:value="*{#numbers.formatInteger(length, 1, 'COMMA')}" type="text" readonly class="form-control-plaintext" id="length"/>
+          <input th:value="*{#numbers.formatInteger(length, 1, 'COMMA')}" type="text" readonly class="form-control-plaintext" id="length" value="1,024"/>
           <input th:value="*{length}" type="hidden" name="length"/>
         </div>
       </div>
       <div class="row mb-3">
         <label for="hashValue" class="col-form-label col-sm-2">ハッシュ値</label>
         <div class="col-sm-10">
-          <input th:field="*{hashValue}" type="text" readonly class="form-control-plaintext" id="hashValue"/>
+          <input th:field="*{hashValue}" type="text" readonly class="form-control-plaintext" id="hashValue" value="xxxx"/>
         </div>
       </div>
       <div class="row mb-3">
         <label for="createdAt" class="col-form-label col-sm-2">作成日時</label>
         <div class="col-sm-10">
-          <input th:value="*{#temporals.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}" type="text" readonly class="form-control-plaintext" id="createdAt"/>
+          <input th:value="*{#temporals.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}" type="text" readonly class="form-control-plaintext" id="createdAt" value="2021/01/01 00:00:00"/>
           <input th:value="*{createdAt}" type="hidden" name="createdAt"/>
         </div>
       </div>
       <div class="row mb-3">
         <label for="updatedAt" class="col-form-label col-sm-2">更新日時</label>
         <div class="col-sm-10">
-          <input th:value="*{#temporals.format(updatedAt, 'yyyy/MM/dd HH:mm:ss')}" type="text" readonly class="form-control-plaintext" id="updatedAt"/>
+          <input th:value="*{#temporals.format(updatedAt, 'yyyy/MM/dd HH:mm:ss')}" type="text" readonly class="form-control-plaintext" id="updatedAt" value="2021/01/01 00:00:00"/>
           <input th:value="*{updatedAt}" type="hidden" name="updatedAt"/>
         </div>
       </div>

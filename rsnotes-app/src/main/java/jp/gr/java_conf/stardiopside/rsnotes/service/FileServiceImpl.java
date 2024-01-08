@@ -57,19 +57,21 @@ public class FileServiceImpl implements FileService {
         Mono<Content> content = Content.from(filePart);
 
         Mono<FileInfo> fileInfo = content
-                .flatMap(c -> fileInfoRepository.save(FileInfo.builder()
+                .map(c -> FileInfo.builder()
                         .fileName(filePart.filename())
                         .contentType(filePart.headers().getFirst(HttpHeaders.CONTENT_TYPE))
                         .length(c.length())
                         .hashValue(c.hashValue())
-                        .build()))
+                        .build())
+                .flatMap(fileInfoRepository::save)
                 .cache();
 
         return Mono.zip(fileInfo, content)
-                .flatMap(t -> fileDataRepository.save(FileData.builder()
+                .map(t -> FileData.builder()
                         .fileInfoId(t.getT1().getId())
                         .data(t.getT2().data())
-                        .build()))
+                        .build())
+                .flatMap(fileDataRepository::save)
                 .then(fileInfo);
     }
 
@@ -94,17 +96,18 @@ public class FileServiceImpl implements FileService {
 
             Mono<IdOnly> fileDataId = fileDataRepository.findByFileInfoId(fileInfo.getId(), IdOnly.class);
             newFileData = Mono.zip(fileDataId, content)
-                    .flatMap(t -> fileDataRepository.save(FileData.builder()
+                    .map(t -> FileData.builder()
                             .id(t.getT1().id())
                             .fileInfoId(fileInfo.getId())
                             .data(t.getT2().data())
                             .version(fileDataVersion)
-                            .build()));
+                            .build())
+                    .flatMap(fileDataRepository::save);
         } else {
             newFileData = Mono.empty();
         }
 
-        return newFileData.then(newFileInfo
+        return newFileData.then(newFileInfo)
                 .map(f -> {
                     if (StringUtils.hasLength(fileInfo.getFileName())) {
                         f.setFileName(fileInfo.getFileName());
@@ -112,7 +115,7 @@ public class FileServiceImpl implements FileService {
                     f.setVersion(fileInfo.getVersion());
                     return f;
                 })
-                .flatMap(fileInfoRepository::save));
+                .flatMap(fileInfoRepository::save);
     }
 
     @Override
