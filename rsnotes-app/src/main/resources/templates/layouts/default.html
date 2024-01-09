@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <meta charset="utf-8"/>
@@ -9,6 +10,15 @@
   <title>Notes</title>
 </head>
 <body>
+<nav class="navbar bg-dark" data-bs-theme="dark">
+  <div class="container">
+    <a th:href="@{/}" class="navbar-brand">Notes</a>
+    <form th:action="@{/logout}" th:method="post" class="d-flex">
+      <span sec:authentication="name" class="navbar-text me-4">username</span>
+      <button class="btn btn-sm btn-light" type="submit">ログアウト</button>
+    </form>
+  </div>
+</nav>
 <div class="container">
   <div layout:fragment="content"></div>
 </div>
