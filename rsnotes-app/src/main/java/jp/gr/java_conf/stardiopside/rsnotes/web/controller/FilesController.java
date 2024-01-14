@@ -6,14 +6,13 @@ import jp.gr.java_conf.stardiopside.rsnotes.service.FileService;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileCreateForm;
 import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileEditForm;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.Constants;
+import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,9 +75,7 @@ public class FilesController {
                                 .attachment()
                                 .filename(d.fileName(), StandardCharsets.UTF_8)
                                 .build()))
-                        .contentType(StringUtils.hasLength(d.contentType())
-                                ? MediaType.parseMediaType(d.contentType())
-                                : MediaType.APPLICATION_OCTET_STREAM)
+                        .contentType(WebUtils.parseMediaType(d.contentType()))
                         .body(d.data()))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }

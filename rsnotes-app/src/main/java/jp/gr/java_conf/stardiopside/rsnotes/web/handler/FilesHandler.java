@@ -7,12 +7,11 @@ import jp.gr.java_conf.stardiopside.rsnotes.web.form.FileEditForm;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.Constants;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebExchangeDataBindings;
+import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.ContentDisposition;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -67,9 +66,7 @@ public class FilesHandler {
                                 .attachment()
                                 .filename(d.fileName(), StandardCharsets.UTF_8)
                                 .build()))
-                        .contentType(StringUtils.hasLength(d.contentType())
-                                ? MediaType.parseMediaType(d.contentType())
-                                : MediaType.APPLICATION_OCTET_STREAM)
+                        .contentType(WebUtils.parseMediaType(d.contentType()))
                         .bodyValue(d.data()))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }

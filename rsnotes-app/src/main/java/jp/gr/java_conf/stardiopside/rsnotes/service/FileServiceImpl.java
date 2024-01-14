@@ -6,6 +6,7 @@ import jp.gr.java_conf.stardiopside.rsnotes.data.repository.FileDataRepository;
 import jp.gr.java_conf.stardiopside.rsnotes.data.repository.FileInfoRepository;
 import jp.gr.java_conf.stardiopside.rsnotes.data.value.DownloadData;
 import jp.gr.java_conf.stardiopside.rsnotes.data.value.FileInfoData;
+import jp.gr.java_conf.stardiopside.rsnotes.data.value.IdOnly;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.springframework.core.io.buffer.DataBuffer;
