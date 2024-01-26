@@ -11,3 +11,6 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+logging:
+  charset:
+    console: ${native.encoding}
