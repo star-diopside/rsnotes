@@ -13,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.InsertOnlyProperty;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.lang.Nullable;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -38,12 +39,14 @@ public class FileData {
 
     @CreatedBy
     @InsertOnlyProperty
+    @Nullable
     private String createdBy;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @LastModifiedBy
+    @Nullable
     private String updatedBy;
 
     @Version

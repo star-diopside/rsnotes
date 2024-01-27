@@ -9,7 +9,6 @@ import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebExchangeDataBindings;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebUtils;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.ContentDisposition;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -87,8 +86,7 @@ public class FilesHandler {
                                         BindingResult.MODEL_KEY_PREFIX + "form", bindingResult));
                     }
 
-                    var messages = new MessageSourceAccessor(messageSource,
-                            request.exchange().getLocaleContext().getLocale());
+                    var messages = WebUtils.newMessageSourceAccessor(messageSource, request);
 
                     return fileService.save(form.getFile())
                             .doOnNext(info -> request.session().subscribe(session ->
@@ -119,8 +117,7 @@ public class FilesHandler {
                                         BindingResult.MODEL_KEY_PREFIX + "form", bindingResult));
                     }
 
-                    var messages = new MessageSourceAccessor(messageSource,
-                            request.exchange().getLocaleContext().getLocale());
+                    var messages = WebUtils.newMessageSourceAccessor(messageSource, request);
 
                     return fileService.update(form.getFile(), form.toFileInfo(), form.getFileDataVersion())
                             .doOnNext(info -> request.session().subscribe(session ->
@@ -133,8 +130,7 @@ public class FilesHandler {
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {
-        var messages = new MessageSourceAccessor(messageSource,
-                request.exchange().getLocaleContext().getLocale());
+        var messages = WebUtils.newMessageSourceAccessor(messageSource, request);
         return RequestPathParser.parseId(request)
                 .flatMap(id -> webExchangeDataBindings.bind(request, FileInfo.builder().id(id).build()))
                 .map(Optional::of).defaultIfEmpty(Optional.empty())

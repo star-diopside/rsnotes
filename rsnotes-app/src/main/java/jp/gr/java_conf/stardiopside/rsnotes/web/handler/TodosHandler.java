@@ -6,8 +6,8 @@ import jp.gr.java_conf.stardiopside.rsnotes.service.TodoService;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.Constants;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.RequestPathParser;
 import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebExchangeDataBindings;
+import jp.gr.java_conf.stardiopside.rsnotes.web.util.WebUtils;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -86,8 +86,7 @@ public class TodosHandler {
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {
-        var messages = new MessageSourceAccessor(messageSource,
-                request.exchange().getLocaleContext().getLocale());
+        var messages = WebUtils.newMessageSourceAccessor(messageSource, request);
         return RequestPathParser.parseId(request)
                 .flatMap(id -> webExchangeDataBindings.bind(request, Todo.builder().id(id).build()))
                 .map(Optional::of).defaultIfEmpty(Optional.empty())
@@ -114,8 +113,7 @@ public class TodosHandler {
                                     "next", a.next())));
         }
 
-        var messages = new MessageSourceAccessor(messageSource,
-                request.exchange().getLocaleContext().getLocale());
+        var messages = WebUtils.newMessageSourceAccessor(messageSource, request);
 
         return todoService.save(todo)
                 .doOnNext(t -> request.session().subscribe(session ->

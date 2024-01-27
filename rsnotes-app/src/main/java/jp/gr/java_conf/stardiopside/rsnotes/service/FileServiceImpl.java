@@ -13,6 +13,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -78,7 +79,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public Mono<FileInfo> update(FilePart filePart, FileInfo fileInfo, Integer fileDataVersion) {
+    public Mono<FileInfo> update(@Nullable FilePart filePart, FileInfo fileInfo, Integer fileDataVersion) {
         Mono<FileInfo> newFileInfo = fileInfoRepository.findById(fileInfo.getId());
 
         Mono<FileData> newFileData;

@@ -9,6 +9,7 @@ import org.springframework.web.bind.support.WebExchangeDataBinder;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Component
@@ -41,7 +42,8 @@ public class WebExchangeDataBindingsImpl implements WebExchangeDataBindings {
         dataBinderCustomizer.accept(binder);
         return binder.construct(request.exchange())
                 .then(binder.bind(request.exchange()))
-                .then(Mono.fromSupplier(() -> new Result<>(targetType.cast(binder.getTarget()),
+                .then(Mono.fromSupplier(() -> new Result<>(
+                        Objects.requireNonNull(targetType.cast(binder.getTarget())),
                         binder.getBindingResult())));
     }
 
@@ -72,7 +74,7 @@ public class WebExchangeDataBindingsImpl implements WebExchangeDataBindings {
                 .then(binder.bind(request.exchange()))
                 .then(Mono.fromSupplier(() -> {
                     binder.validate();
-                    var target = targetType.cast(binder.getTarget());
+                    var target = Objects.requireNonNull(targetType.cast(binder.getTarget()));
                     var bindingResult = binder.getBindingResult();
                     return new Result<>(target, bindingResult);
                 }));

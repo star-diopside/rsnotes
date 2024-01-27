@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class FileEditForm {
 
+    @Nullable
     private FilePart file;
 
     private Long id;
@@ -22,6 +24,7 @@ public class FileEditForm {
 
     private String updateFileName;
 
+    @Nullable
     private String contentType;
 
     private Integer length;

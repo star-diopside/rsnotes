@@ -1,11 +1,13 @@
 package jp.gr.java_conf.stardiopside.rsnotes.data.value;
 
+import org.springframework.lang.Nullable;
+
 import java.time.LocalDateTime;
 
 public record FileInfoData(
         Long id,
         String fileName,
-        String contentType,
+        @Nullable String contentType,
         Integer length,
         String hashValue,
         LocalDateTime createdAt,
