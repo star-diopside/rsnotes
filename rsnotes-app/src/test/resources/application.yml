@@ -7,3 +7,8 @@ spring:
     url: r2dbc:postgresql://localhost:5432/test_rsnotesdb
     username: rsnotes
     password: rsnotes
+dbunit:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test_rsnotesdb
+    username: rsnotes
+    password: rsnotes

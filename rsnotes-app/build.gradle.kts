@@ -21,6 +21,8 @@ dependencies {
     runtimeOnly("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+    testImplementation("com.github.springtestdbunit:spring-test-dbunit")
+    testImplementation("org.dbunit:dbunit")
 }
 
 tasks.test {

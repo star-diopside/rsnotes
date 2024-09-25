@@ -1,0 +1,4 @@
+id,user_id,authority,created_at,created_by,updated_at,updated_by,version
+200,100,ROLE_ADMIN,2024-01-01 00:00:00,test_user,2024-01-01 00:00:00,test_user,0
+201,100,ROLE_USER,2024-01-01 00:00:00,test_user,2024-01-01 00:00:00,test_user,0
+300,101,ROLE_USER,2024-01-01 00:00:00,test_user,2024-01-01 00:00:00,test_user,0

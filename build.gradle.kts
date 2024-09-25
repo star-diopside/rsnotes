@@ -1,7 +1,7 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.2.1" apply false
-    id("io.spring.dependency-management") version "1.1.4"
+    id("org.springframework.boot") version "3.3.4" apply false
+    id("io.spring.dependency-management") version "1.1.6"
 }
 
 subprojects {
@@ -18,6 +18,10 @@ subprojects {
     dependencyManagement {
         imports {
             mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+        }
+        dependencies {
+            dependency("com.github.springtestdbunit:spring-test-dbunit:1.3.0")
+            dependency("org.dbunit:dbunit:2.8.0")
         }
     }
 
