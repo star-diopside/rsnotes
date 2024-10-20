@@ -1,0 +1,2 @@
+id,file_info_id,data,created_at,created_by,updated_at,updated_by,version
+100,10,[TEXT]テキストファイルデータ,2024-01-01 00:00:00,test_user,2024-01-01 00:00:00,test_user,0

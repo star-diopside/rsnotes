@@ -2,13 +2,13 @@ package jp.gr.java_conf.stardiopside.rsnotes.test.dataset;
 
 import com.github.springtestdbunit.dataset.AbstractDataSetLoader;
 import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.csv.CsvURLDataSet;
+import org.dbunit.dataset.csv.CsvDataSet;
 import org.springframework.core.io.Resource;
 
 public class CsvDataSetLoader extends AbstractDataSetLoader {
 
     @Override
     protected IDataSet createDataSet(Resource resource) throws Exception {
-        return new CsvURLDataSet(resource.getURL());
+        return new CsvDataSet(resource.getFile());
     }
 }
