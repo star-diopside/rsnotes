@@ -36,4 +36,8 @@ subprojects {
         withJavadocJar()
         withSourcesJar()
     }
+
+    tasks.javadoc {
+        (options as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
+    }
 }
