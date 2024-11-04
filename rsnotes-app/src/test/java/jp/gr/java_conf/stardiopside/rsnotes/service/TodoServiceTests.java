@@ -19,11 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
         mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 class TodoServiceTests {
 
+    private static final String TEST_RESOURCE_PREFIX = "TodoServiceTests-resources";
+
     @Autowired
     private TodoService todoService;
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/empty")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/empty")
     void listEmpty() {
         StepVerifier.create(todoService.list())
                 .expectNextCount(0)
@@ -31,7 +33,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/one")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/one")
     void listOne() {
         StepVerifier.create(todoService.list())
                 .assertNext(todo -> {
@@ -43,7 +45,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void listMany() {
         var expectedIds = new long[]{90, 101, 102, 103, 104, 105, 107, 108, 109, 110, 990};
         StepVerifier.Step<Todo> step = StepVerifier.create(todoService.list());
@@ -58,7 +60,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findNotFound() {
         StepVerifier.create(todoService.find(1L))
                 .expectNextCount(0)
@@ -66,7 +68,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findOne() {
         StepVerifier.create(todoService.find(90L))
                 .assertNext(todo -> {
@@ -78,7 +80,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/empty")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/empty")
     void findAroundEmpty() {
         StepVerifier.create(todoService.findAround(1L))
                 .assertNext(around -> {
@@ -90,7 +92,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/one")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/one")
     void findAroundOne() {
         StepVerifier.create(todoService.findAround(1L))
                 .assertNext(around -> {
@@ -102,7 +104,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findAroundNotFound() {
         StepVerifier.create(todoService.findAround(1L))
                 .assertNext(around -> {
@@ -114,7 +116,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findAroundFirst() {
         StepVerifier.create(todoService.findAround(90L))
                 .assertNext(around -> {
@@ -126,7 +128,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findAroundMiddle() {
         StepVerifier.create(todoService.findAround(107L))
                 .assertNext(around -> {
@@ -138,7 +140,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findAroundLast() {
         StepVerifier.create(todoService.findAround(990L))
                 .assertNext(around -> {
@@ -150,7 +152,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/empty")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/empty")
     void findWithAroundEmpty() {
         StepVerifier.create(todoService.findWithAround(1L))
                 .expectNextCount(0)
@@ -158,7 +160,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/one")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/one")
     void findWithAroundOne() {
         StepVerifier.create(todoService.findWithAround(1L))
                 .assertNext(node -> {
@@ -173,7 +175,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findWithAroundNotFound() {
         StepVerifier.create(todoService.findWithAround(1L))
                 .expectNextCount(0)
@@ -181,7 +183,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findWithAroundFirst() {
         StepVerifier.create(todoService.findWithAround(90L))
                 .assertNext(node -> {
@@ -196,7 +198,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findWithAroundMiddle() {
         StepVerifier.create(todoService.findWithAround(107L))
                 .assertNext(node -> {
@@ -211,7 +213,7 @@ class TodoServiceTests {
     }
 
     @Test
-    @DatabaseSetup("TodoServiceTests-dataset/many")
+    @DatabaseSetup(TEST_RESOURCE_PREFIX + "/dataset/setup/many")
     void findWithAroundLast() {
         StepVerifier.create(todoService.findWithAround(990L))
                 .assertNext(node -> {

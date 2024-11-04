@@ -1,0 +1,2 @@
+id,file_name,content_type,length,hash_value,created_at,created_by,updated_at,updated_by,version
+1,空ファイル1.dat,[null],0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,2024-01-01 00:00:00,test_user,2024-01-01 00:00:00,test_user,0

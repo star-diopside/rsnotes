@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestExecutionListeners(
         listeners = DbUnitTestExecutionListener.class,
         mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-@DatabaseSetup("UserDetailsServiceTests-dataset")
+@DatabaseSetup("UserDetailsServiceTests-resources/dataset")
 class UserDetailsServiceTests {
 
     @Autowired
