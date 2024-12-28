@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -315,8 +316,9 @@ class FileServiceTests {
                         .getResource(TEST_RESOURCE_PREFIX + "/file/sha256sum.txt")
                         .getInputStream(),
                 StandardCharsets.UTF_8))) {
+            var p = Pattern.compile("\\s+");
             return reader.lines()
-                    .map(line -> line.split("\\s+", 2))
+                    .map(line -> p.split(line, 2))
                     .filter(items -> items.length == 2)
                     .collect(Collectors.toUnmodifiableMap(items -> items[1], items -> items[0]));
         } catch (IOException e) {
