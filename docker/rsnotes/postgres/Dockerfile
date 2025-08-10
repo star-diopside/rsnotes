@@ -1,2 +1,2 @@
 FROM postgres:17-alpine
-ENV LANG ja_JP.utf8
+ENV LANG=ja_JP.utf8
