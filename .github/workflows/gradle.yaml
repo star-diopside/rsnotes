@@ -13,18 +13,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
       - name: Run Docker
-        run: docker compose -f docker/rsnotes/compose.yml up --build -d
+        run: docker compose -f docker/rsnotes/compose.yaml up --build -d
 
-      - name: Build with Gradle
+      - name: Build with Gradle Wrapper
         run: ./gradlew build
