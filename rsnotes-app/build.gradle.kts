@@ -1,4 +1,5 @@
 plugins {
+    id("java-common-conventions")
     id("org.springframework.boot")
 }
 
@@ -14,17 +15,19 @@ dependencies {
     implementation("org.springframework.session:spring-session-data-redis")
     implementation("org.apache.commons:commons-lang3")
     implementation("commons-codec:commons-codec")
+    runtimeOnly("org.springframework.boot:spring-boot-starter-liquibase")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("org.liquibase:liquibase-core")
     runtimeOnly("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     runtimeOnly("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-webtestclient")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("com.github.springtestdbunit:spring-test-dbunit")
     testImplementation("org.dbunit:dbunit")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.springframework.boot:spring-boot-starter-liquibase-test")
 }
 
 tasks.test {
