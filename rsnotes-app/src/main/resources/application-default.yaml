@@ -1,7 +1,18 @@
 spring:
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/rsnotesdb
+    user: rsnotes
+    password: rsnotes
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/rsnotesdb
+    username: rsnotes
+    password: rsnotes
   codec:
     log-request-details: true
+
 logging:
+  file:
+    name: ${user.home}/logs/rsnotes/web-app.log
   group:
     r2dbc:
       - "org.springframework.r2dbc"
@@ -9,4 +20,4 @@ logging:
   level:
     web: DEBUG
     r2dbc: DEBUG
-    "jp.gr.java_conf.stardiopside.rsnotes": DEBUG
+    "[jp.gr.java_conf.stardiopside.rsnotes]": DEBUG

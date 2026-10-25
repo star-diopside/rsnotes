@@ -1,0 +1,13 @@
+spring:
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/rsnotesdb
+    user: rsnotes
+    password: rsnotes
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/rsnotesdb
+    username: rsnotes
+    password: rsnotes
+
+logging:
+  file:
+    name: ${user.home}/logs/rsnotes/web-app.log
